@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Thumbnail - Samuel Santos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <!-- Dependências do Cropper.js para Recorte -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* Variáveis CSS para Cores Dinâmicas */
+    :root {
+      --bg-dark: #0F172A; /* Cor de Fundo Principal */
+      --accent-primary: #2563EB; /* Cor de Destaque */
+      --accent-secondary: #1D4ED8;
+      --text-light: #FFFFFF;
+      --text-dim: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: var(--bg-dark);
+    }
+
+    .controls {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1000px; /* Aumentei o max-width para acomodar mais controles */
+      justify-content: center;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 180px;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    input[type="text"] {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    
+    input[type="color"] {
+        height: 38px;
+        padding: 4px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    input[type="file"] {
+      padding: 5px;
+    }
+
+    button {
+      background-color: var(--accent-primary);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      align-self: flex-end;
+    }
+
+    button:hover {
+      background-color: var(--accent-secondary);
+    }
+    
+    /* Controles de Ícones */
+    .icon-picker {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        min-width: 100%;
+    }
+
+    .icon-checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        border: 1px solid #cbd5e1;
+        padding: 8px;
+        border-radius: 6px;
+        background-color: #f8fafc;
+    }
+    
+    .icon-checkbox-group label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 400;
+        transition: background-color 0.1s;
+        color: var(--text-primary);
+    }
+    
+    .icon-checkbox-group label:hover {
+        background-color: #e2e8f0;
+    }
+
+    .icon-checkbox-group input[type="checkbox"] {
+        cursor: pointer;
+    }
+    
+    /* --- ÁREA DA THUMBNAIL (1200x630px - Padrão Open Graph/LinkedIn) --- */
+    #thumbnail-container {
+      width: 1200px;
+      height: 630px;
+      background-color: var(--bg-dark);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      transform-origin: top center;
+      /* Escala para caber em telas menores durante a edição */
+      transform: scale(0.6); 
+      margin-bottom: -200px; /* Compensa o scale */
+    }
+
+    /* Background Effects (Usam var(--accent-primary)) */
+    .bg-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(var(--accent-primary-low-opacity) 1px, transparent 1px),
+        linear-gradient(90deg, var(--accent-primary-low-opacity) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      z-index: 1;
+    }
+
+    .bg-glow {
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-primary-medium-opacity) 0%, var(--bg-dark-transparent) 70%);
+      z-index: 1;
+    }
+
+    /* Left Content */
+    .content-side {
+      flex: 1.4;
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      z-index: 10;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-primary-low-opacity);
+      color: var(--accent-primary);
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      width: fit-content;
+      margin-bottom: 24px;
+      border: 1px solid var(--accent-primary-medium-opacity);
+    }
+
+    .main-title {
+      font-size: 4.5rem;
+      font-weight: 900;
+      color: var(--text-light);
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .highlight-text {
+      color: var(--accent-primary);
+    }
+
+    .subtitle {
+      font-size: 1.8rem;
+      color: var(--text-dim);
+      font-family: 'Merriweather', serif;
+      font-weight: 300;
+      max-width: 90%;
+    }
+
+    .tech-stack {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .tech-icon {
+      font-size: 2.5rem;
+      color: #cbd5e1;
+    }
+
+    /* Right Side (Image) */
+    .image-side {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .image-blob-container {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .blob-bg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--accent-primary);
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      opacity: 0.2;
+      animation: morph 8s ease-in-out infinite;
+    }
+
+    .profile-img-frame {
+      width: 420px;
+      height: 420px;
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      overflow: hidden;
+      position: relative;
+      border: 5px solid rgba(255,255,255,0.1);
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .placeholder-text {
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      font-size: 1.2rem;
+    }
+
+    @keyframes morph {
+      0% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+      33% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
+      66% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+      100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+    }
+
+    /* Responsive scaling for preview */
+    @media (max-width: 1250px) {
+      #thumbnail-container {
+        transform: scale(0.45);
+        margin-bottom: -300px;
+      }
+    }
+    @media (max-width: 600px) {
+      #thumbnail-container {
+        transform: scale(0.28);
+        margin-bottom: -400px;
+      }
+      .controls {
+        flex-direction: column;
+      }
+    }
+    
+    /* --- Modal e Cropper CSS --- */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 90vw;
+        max-height: 90vh;
+        width: 600px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+
+    .cropper-container-box {
+        max-width: 100%;
+        max-height: 400px;
+        overflow: hidden;
+        margin-bottom: 15px;
+    }
+
+    #imageCropper {
+        display: block;
+        max-width: 100%;
+    }
+
+    .cropper-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .cropper-buttons button {
+        flex: 1;
+        padding: 12px;
+        font-size: 1rem;
+        align-self: auto;
+    }
+
+    #cropAndApply {
+        background-color: #10B981; /* Green */
+    }
+    #cropAndApply:hover {
+        background-color: #059669;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Gerador de Thumbnail Personalizável</h1>
+
+  <div class="controls">
+    
+    <div class="input-group">
+      <label>Título Principal</label>
+      <input type="text" id="inputTitle" value="Samuel Santos" oninput="updateContent()">
+    </div>
+    
+    <div class="input-group">
+      <label>Subtítulo</label>
+      <input type="text" id="inputSubtitle" value="Especialista em Geotecnologias" oninput="updateContent()">
+    </div>
+    
+    <div class="input-group">
+      <label>Cor de Fundo Escuro</label>
+      <input type="color" id="inputBgDark" value="#0F172A" oninput="updateColors()">
+    </div>
+    
+    <div class="input-group">
+      <label>Cor de Destaque</label>
+      <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="updateColors()">
+    </div>
+
+    <div class="input-group">
+      <label>Foto de Perfil</label>
+      <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+    </div>
+    
+    <button onclick="downloadThumbnail()"><i class="fas fa-download"></i> Baixar PNG</button>
+    
+    <!-- Novo Controle de Ícones -->
+    <div class="icon-picker">
+        <label>Tecnologias (Max 5)</label>
+        <div class="icon-checkbox-group" id="iconCheckboxes">
+            <!-- Checkboxes serão gerados pelo JS -->
+        </div>
+    </div>
+    <!-- Fim Novo Controle de Ícones -->
+  </div>
+
+  <!-- THUMBNAIL PREVIEW -->
+  <div id="thumbnail-container">
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <div class="content-side">
+      <div class="badge">
+        <i class="fas fa-code"></i> <span>Portfólio Profissional</span>
+      </div>
+      
+      <h1 class="main-title" id="displayTitle">Samuel Santos</h1>
+      
+      <p class="subtitle" id="displaySubtitle">
+        Especialista em Geotecnologias
+      </p>
+
+      <div class="tech-stack" id="displayTechStack">
+        <!-- Ícones renderizados pelo JS -->
+      </div>
+    </div>
+
+    <div class="image-side">
+      <div class="image-blob-container">
+        <div class="blob-bg"></div>
+        <div class="profile-img-frame">
+          <img id="displayImage" class="profile-img" style="display:none;">
+          <div class="placeholder-text">Carregando...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE RECORTE (CROPPER) -->
+  <div id="cropModal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Ajustar Imagem de Perfil (1:1)</h2>
+      <div class="cropper-container-box">
+        <img id="imageCropper" alt="Imagem para recorte">
+      </div>
+      <div class="cropper-buttons">
+        <button id="cropAndApply"><i class="fas fa-check"></i> Aplicar Recorte</button>
+        <button onclick="closeCropper()"><i class="fas fa-times"></i> Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    let cropper; // Variável global para a instância do Cropper
+    const root = document.documentElement;
+
+    const allTechIcons = [
+        { name: "Python", class: "fab fa-python" },
+        { name: "JavaScript", class: "fab fa-js" },
+        { name: "HTML5", class: "fab fa-html5" },
+        { name: "CSS3", class: "fab fa-css3-alt" },
+        { name: "React", class: "fab fa-react" },
+        { name: "Node.js", class: "fab fa-node-js" },
+        { name: "Docker", class: "fab fa-docker" },
+        { name: "Git", class: "fab fa-git-alt" },
+        { name: "Database", class: "fas fa-database" },
+        { name: "Mapa/GIS", class: "fas fa-map-marked-alt" },
+        { name: "Análise", class: "fas fa-chart-pie" },
+        { name: "Cloud", class: "fas fa-cloud" },
+    ];
+
+    // Função Auxiliar: Converte arquivo/blob para Base64
+    const fileToBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    };
+    
+    // Função para converter cor hex para RGBA com opacidade
+    function hexToRgba(hex, opacity) {
+        let r = 0, g = 0, b = 0;
+        // 3 digits
+        if (hex.length == 4) {
+            r = parseInt(hex[1] + hex[1], 16);
+            g = parseInt(hex[2] + hex[2], 16);
+            b = parseInt(hex[3] + hex[3], 16);
+        } 
+        // 6 digits
+        else if (hex.length == 7) {
+            r = parseInt(hex.substring(1, 3), 16);
+            g = parseInt(hex.substring(3, 5), 16);
+            b = parseInt(hex.substring(5, 7), 16);
+        }
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+
+    // 1. Atualização de Cores
+    function updateColors() {
+        const darkHex = document.getElementById('inputBgDark').value;
+        const accentHex = document.getElementById('inputAccentPrimary').value;
+        
+        root.style.setProperty('--bg-dark', darkHex);
+        root.style.setProperty('--accent-primary', accentHex);
+
+        // Gera cores com opacidade para os efeitos de fundo
+        root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.2));
+        root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.4));
+        root.style.setProperty('--bg-dark-transparent', hexToRgba(darkHex, 0));
+    }
+
+    // 2. Renderiza os Checkboxes de Ícones
+    function renderIconCheckboxes() {
+        const container = document.getElementById('iconCheckboxes');
+        container.innerHTML = ''; // Limpa o conteúdo
+        
+        allTechIcons.forEach(icon => {
+            const id = `icon-${icon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+            const isChecked = ['Python', 'Database', 'Mapa/GIS', 'JavaScript', 'Análise'].includes(icon.name); // Seleção padrão
+            
+            const label = document.createElement('label');
+            label.setAttribute('for', id);
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = id;
+            checkbox.value = icon.class;
+            checkbox.checked = isChecked;
+            checkbox.onchange = updateTechStack;
+            
+            const iconSpan = document.createElement('i');
+            iconSpan.className = icon.class;
+            
+            const textNode = document.createTextNode(icon.name);
+            
+            label.appendChild(checkbox);
+            label.appendChild(iconSpan);
+            label.appendChild(textNode);
+            container.appendChild(label);
+        });
+
+        updateTechStack(); // Renderiza os ícones iniciais
+    }
+
+    // 3. Atualiza os Ícones Visíveis
+    function updateTechStack() {
+        const selectedCheckboxes = Array.from(document.querySelectorAll('#iconCheckboxes input[type="checkbox"]:checked'));
+        const displayContainer = document.getElementById('displayTechStack');
+        displayContainer.innerHTML = '';
+        
+        // Limita a 5 ícones
+        const iconsToDisplay = selectedCheckboxes.slice(0, 5);
+        
+        iconsToDisplay.forEach(checkbox => {
+            const iconElement = document.createElement('i');
+            iconElement.className = `${checkbox.value} tech-icon`;
+            displayContainer.appendChild(iconElement);
+        });
+
+        // Desabilita os extras se o limite for atingido
+        const checkboxes = document.querySelectorAll('#iconCheckboxes input[type="checkbox"]');
+        if (selectedCheckboxes.length >= 5) {
+            checkboxes.forEach(cb => {
+                if (!cb.checked) {
+                    cb.disabled = true;
+                }
+            });
+        } else {
+            checkboxes.forEach(cb => {
+                cb.disabled = false;
+            });
+        }
+    }
+
+
+    // Função para abrir o modal do Cropper
+    function openCropper(imageUrl) {
+        const modal = document.getElementById('cropModal');
+        const image = document.getElementById('imageCropper');
+        
+        image.src = imageUrl;
+        modal.style.display = 'flex';
+
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        // Inicializa o Cropper
+        cropper = new Cropper(image, {
+            aspectRatio: 1, // Força o recorte para ser um quadrado (1:1)
+            viewMode: 1, 
+            autoCropArea: 0.9,
+            responsive: true,
+            background: false
+        });
+    }
+
+    // Função para fechar o modal do Cropper
+    function closeCropper() {
+        document.getElementById('cropModal').style.display = 'none';
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        // Limpa o input file, forçando um novo evento se a mesma imagem for selecionada
+        document.getElementById('imageInput').value = ''; 
+    }
+
+    // Ação do botão "Aplicar Recorte"
+    document.getElementById('cropAndApply').addEventListener('click', () => {
+        if (cropper) {
+            // Obtém a imagem recortada como Base64 (tamanho 420x420 para manter a qualidade)
+            const croppedCanvas = cropper.getCroppedCanvas({
+                width: 420, // Tamanho ideal para o frame na thumbnail
+                height: 420,
+            });
+            const base64 = croppedCanvas.toDataURL('image/jpeg');
+
+            const output = document.getElementById('displayImage');
+            output.src = base64;
+            output.style.display = 'block';
+            document.querySelector('.placeholder-text').style.display = 'none';
+
+            closeCropper();
+        }
+    });
+
+    // Inicialização da Aplicação
+    window.onload = async () => {
+        updateContent(); // Atualiza textos iniciais
+        updateColors(); // Aplica cores iniciais e variáveis de opacidade
+        renderIconCheckboxes(); // Renderiza e aplica os ícones iniciais
+        
+        try {
+            // Tenta buscar a imagem padrão na mesma pasta
+            const response = await fetch('Perfil2.jpg');
+            if (response.ok) {
+                const blob = await response.blob();
+                const base64 = await fileToBase64(blob);
+                
+                const img = document.getElementById('displayImage');
+                img.src = base64; 
+                img.style.display = 'block';
+                document.querySelector('.placeholder-text').style.display = 'none';
+            } else {
+                document.querySelector('.placeholder-text').innerText = "Carregue sua foto";
+            }
+        } catch (e) {
+            console.log("Imagem padrão não encontrada ou erro ao converter. Usuário deve fazer upload.", e);
+            document.querySelector('.placeholder-text').innerText = "Carregue sua foto";
+        }
+    };
+
+    // Atualização de Texto
+    function updateContent() {
+      document.getElementById('displayTitle').innerText = document.getElementById('inputTitle').value;
+      document.getElementById('displaySubtitle').innerText = document.getElementById('inputSubtitle').value;
+    }
+
+    // Upload de Imagem (Abre o Cropper)
+    async function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+          try {
+            const base64 = await fileToBase64(file);
+            openCropper(base64); // Chama o modal de recorte
+          } catch (e) {
+            console.error("Erro ao ler arquivo", e);
+          }
+      }
+    }
+
+    // Download
+    function downloadThumbnail() {
+      const element = document.getElementById("thumbnail-container");
+      
+      // Salva estilos atuais
+      const currentTransform = element.style.transform;
+      const currentMargin = element.style.marginBottom;
+      
+      // Reseta escala para qualidade máxima para html2canvas
+      element.style.transform = "scale(1)";
+      element.style.marginBottom = "0";
+      
+      // Delay para renderização
+      setTimeout(() => {
+        html2canvas(element, {
+          backgroundColor: root.style.getPropertyValue('--bg-dark'), 
+          scale: 1, // Garante que a imagem é gerada em 1200x630px
+          useCORS: true, 
+          allowTaint: true
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'samuel-santos-thumbnail.png';
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+
+          // Restaura visual após o download
+          element.style.transform = currentTransform;
+          element.style.marginBottom = currentMargin;
+        }).catch(err => {
+            console.error("Erro ao gerar imagem:", err);
+            
+            // Exibe modal de erro customizado (Substitui o alert())
+            const errorMessage = "Erro ao gerar a imagem. Verifique o console (F12).";
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+                z-index: 2001; text-align: center; font-family: 'Inter', sans-serif;
+            `;
+            modal.innerHTML = `
+                <p style="color: #EF4444; font-weight: 700;">Erro na Captura!</p>
+                <p style="margin-top: 10px; color: #333;">${errorMessage}</p>
+                <button onclick="this.parentNode.remove()" style="margin-top: 15px; background-color: #EF4444; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Fechar</button>
+            `;
+            document.body.appendChild(modal);
+
+            // Restaura visual
+            element.style.transform = currentTransform;
+            element.style.marginBottom = currentMargin;
+        });
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
