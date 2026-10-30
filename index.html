@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Thumbnail - Samuel Santos</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
-  <!-- Dependências do Cropper.js para Recorte -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Merriweather:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700&family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <style>
-    /* Variáveis CSS para Cores Dinâmicas */
     :root {
       --bg-dark: #0F172A;
       --accent-primary: #2563EB;
       --accent-secondary: #1D4ED8;
       --icon-color: #F8FAFC;
-      --text-light: #FFFFFF;
-      --text-dim: #94A3B8;
+      --text-color: #FFFFFF;
+      --subtitle-color: #A5B4CF;
+      --tag-text-color: #EAF2FF;
+      --page-bg: #eef3f9;
+      --panel-bg: #ffffff;
+      --soft-border: rgba(148, 163, 184, 0.28);
+      --muted: #64748b;
+      --shadow: 0 16px 38px rgba(15, 23, 42, 0.12);
       --font-body: 'Inter', sans-serif;
       --font-heading: 'Space Grotesk', 'Inter', sans-serif;
       --font-subtitle: 'Merriweather', serif;
@@ -35,276 +37,381 @@
 
     body {
       font-family: var(--font-body);
-      background-color: #f0f2f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
+        linear-gradient(180deg, #f5f8fc 0%, var(--page-bg) 100%);
+      color: #0f172a;
       min-height: 100vh;
+      padding: 32px 20px 80px;
     }
 
-    h1 {
-      margin-bottom: 20px;
-      color: var(--bg-dark);
+    .app-shell {
+      max-width: 1360px;
+      margin: 0 auto;
     }
 
-    .controls {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+    .topbar {
       display: flex;
-      gap: 15px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
       flex-wrap: wrap;
-      width: 100%;
-      max-width: 1200px;
-      justify-content: center;
+    }
+
+    .topbar h1 {
+      font-size: clamp(1.8rem, 2vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #0f172a;
+    }
+
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      color: #1d4ed8;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .controls-panel {
+      padding: 22px;
+    }
+
+    .preset-area {
+      margin-bottom: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #475569;
+      font-weight: 800;
+    }
+
+    .preset-row {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(44px, 1fr));
+      gap: 10px;
+    }
+
+    .preset-btn {
+      appearance: none;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      border-radius: 14px;
+      min-height: 52px;
+      background: linear-gradient(135deg, #fff 0%, #eef3ff 100%);
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.07);
+    }
+
+    .preset-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+    }
+
+    .preset-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--preset-a), var(--preset-b));
+    }
+
+    .preset-btn.active {
+      border-color: rgba(15, 23, 42, 0.2);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25), 0 12px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      min-width: 180px;
+      gap: 8px;
+      min-width: 0;
     }
 
     .input-group.wide {
-      min-width: 250px;
-    }
-
-    .color-input-block {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 210px;
-    }
-
-    .color-input-block input[type="color"] {
-      width: 52px;
-      min-width: 52px;
-      height: 38px;
-      padding: 2px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      cursor: pointer;
-      background: white;
-    }
-
-    .color-input-block input[type="text"] {
-      flex: 1;
+      grid-column: 1 / -1;
     }
 
     label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #64748b;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #475569;
+      font-weight: 800;
     }
 
     input[type="text"],
     select {
-      padding: 8px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border: 1px solid var(--soft-border);
+      background: rgba(248, 250, 252, 0.9);
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 0.96rem;
       font-family: inherit;
-      font-size: 0.95rem;
-      background: white;
+      color: #0f172a;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    input[type="file"] {
-      padding: 5px;
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(37, 99, 235, 0.45);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
     }
 
-    button {
-      background-color: var(--accent-primary);
-      color: white;
+    .color-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid var(--soft-border);
+      border-radius: 12px;
+      padding: 6px 8px 6px 10px;
+    }
+
+    .color-control input[type="color"] {
+      width: 40px;
+      height: 38px;
       border: none;
-      padding: 10px 24px;
-      border-radius: 6px;
-      font-weight: 700;
+      background: transparent;
+      padding: 0;
       cursor: pointer;
-      transition: background 0.2s;
-      align-self: flex-end;
     }
 
-    button:hover {
-      background-color: var(--accent-secondary);
+    .color-control input[type="text"] {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font-weight: 600;
     }
 
-    .color-palette {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 8px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      background: #f8fafc;
-      width: 100%;
-      max-width: 430px;
-    }
-
-    .swatch {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 2px solid rgba(15, 23, 42, 0.15);
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
-    }
-
-    .swatch:hover {
-      transform: translateY(-1px) scale(1.05);
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
-    }
-
-    .swatch.active {
-      outline: 2px solid #0f172a;
-      outline-offset: 2px;
-    }
-
-    /* Controles de Ícones */
     .icon-picker {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      width: 100%;
-      max-width: 100%;
+      grid-column: 1 / -1;
+      margin-top: 4px;
+    }
+
+    .icon-box {
+      border: 1px solid var(--soft-border);
+      background: rgba(248, 250, 252, 0.9);
+      border-radius: 16px;
+      padding: 12px;
     }
 
     .icon-checkbox-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      border: 1px solid #cbd5e1;
-      padding: 8px;
-      border-radius: 6px;
-      background-color: #f8fafc;
-      min-height: 58px;
-    }
-    
-    .icon-checkbox-group label {
-      display: flex;
+      gap: 8px;
       align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: 400;
-      transition: background-color 0.1s;
-      color: var(--text-primary);
     }
-    
+
+    .icon-checkbox-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: #334155;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 999px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
     .icon-checkbox-group label:hover {
-      background-color: #e2e8f0;
+      background: rgba(241, 245, 249, 1);
+      border-color: rgba(148, 163, 184, 0.5);
     }
 
     .icon-checkbox-group input[type="checkbox"] {
-      cursor: pointer;
+      accent-color: #2563eb;
+      width: 14px;
+      height: 14px;
     }
 
-    /* --- ÁREA DA THUMBNAIL (1200x630px - Padrão Open Graph/LinkedIn) --- */
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 12px 18px rgba(37, 99, 235, 0.2);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
+    .preview-panel {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(248,250,252,0.7));
+    }
+
+    .preview-shell {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+    }
+
     #thumbnail-container {
-      width: 1200px;
-      height: 630px;
-      background-color: var(--bg-dark);
+      width: min(100%, 1000px);
+      max-width: 1000px;
+      height: 525px;
+      background: var(--bg-dark);
       position: relative;
       overflow: hidden;
       display: flex;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.18);
+      border-radius: 20px;
       transform-origin: top center;
-      transform: scale(0.6); 
-      margin-bottom: -200px;
+      transform: scale(0.85);
+      margin-bottom: -140px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
     }
 
-    /* Background Effects (Usam var(--accent-primary)) */
     .bg-grid {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
+      inset: 0;
+      background-image:
         linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.3;
+      background-size: 38px 38px;
+      opacity: 0.42;
       z-index: 1;
     }
 
     .bg-glow {
       position: absolute;
-      top: -20%;
+      top: -18%;
       right: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(15,23,42,0) 70%);
+      width: 560px;
+      height: 560px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 64%);
       z-index: 1;
     }
 
-    /* Left Content */
     .content-side {
-      flex: 1.4;
-      padding: 80px;
+      flex: 1.45;
+      padding: 58px 52px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      z-index: 10;
       position: relative;
+      z-index: 10;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.08);
-      color: var(--accent-primary);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1rem;
       width: fit-content;
-      margin-bottom: 24px;
+      background: rgba(255,255,255,0.08);
+      color: var(--tag-text-color);
       border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 9px 15px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 22px;
     }
 
     .main-title {
-      font-size: 4.5rem;
-      font-weight: 900;
-      color: var(--text-light);
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
       font-family: var(--font-heading);
-    }
-
-    .highlight-text {
-      color: var(--accent-primary);
-    }
-
-    .subtitle {
-      font-size: 1.8rem;
-      color: var(--text-dim);
-      font-family: var(--font-subtitle);
-      font-weight: 300;
+      color: var(--text-color);
+      font-size: clamp(2.3rem, 3vw, 4rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      margin-bottom: 18px;
       max-width: 90%;
     }
 
-    .tech-stack {
-      margin-top: 40px;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+    .subtitle {
+      color: var(--subtitle-color);
+      font-family: var(--font-subtitle);
+      font-size: clamp(1.05rem, 1.6vw, 1.8rem);
+      line-height: 1.3;
       max-width: 85%;
+      font-weight: 300;
+    }
+
+    .tech-stack {
+      margin-top: 28px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      max-width: 80%;
     }
 
     .tech-icon {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       color: var(--icon-color);
-      opacity: 0.9;
+      opacity: 0.96;
     }
 
-    /* Right Side (Image) */
     .image-side {
       flex: 1;
       position: relative;
@@ -316,8 +423,8 @@
 
     .image-blob-container {
       position: relative;
-      width: 500px;
-      height: 500px;
+      width: 420px;
+      height: 420px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -325,37 +432,40 @@
 
     .blob-bg {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: var(--accent-primary);
       border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
       opacity: 0.2;
-      animation: morph 8s ease-in-out infinite;
+      animation: morph 9s ease-in-out infinite;
     }
 
     .profile-img-frame {
-      width: 420px;
-      height: 420px;
+      width: 350px;
+      height: 350px;
       border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
       overflow: hidden;
       position: relative;
       border: 5px solid rgba(255,255,255,0.1);
-      background: #1e293b;
+      background: rgba(15,23,42,0.32);
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
     }
 
     .profile-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .placeholder-text {
-      color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.32);
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     @keyframes morph {
@@ -365,29 +475,10 @@
       100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
     }
 
-    @media (max-width: 1250px) {
-      #thumbnail-container {
-        transform: scale(0.45);
-        margin-bottom: -300px;
-      }
-    }
-    @media (max-width: 600px) {
-      #thumbnail-container {
-        transform: scale(0.28);
-        margin-bottom: -400px;
-      }
-      .controls {
-        flex-direction: column;
-      }
-    }
-
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.76);
       display: none;
       justify-content: center;
       align-items: center;
@@ -396,19 +487,26 @@
 
     .modal-content {
       background: white;
-      padding: 20px;
-      border-radius: 12px;
+      padding: 22px;
+      border-radius: 18px;
       max-width: 90vw;
-      max-height: 90vh;
-      width: 600px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      width: 620px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+    }
+
+    .modal-content h2 {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
     }
 
     .cropper-container-box {
       max-width: 100%;
-      max-height: 400px;
+      max-height: 420px;
       overflow: hidden;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
     }
 
     #imageCropper {
@@ -418,134 +516,207 @@
 
     .cropper-buttons {
       display: flex;
-      justify-content: space-between;
       gap: 10px;
+      justify-content: space-between;
     }
 
     .cropper-buttons button {
       flex: 1;
-      padding: 12px;
-      font-size: 1rem;
-      align-self: auto;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 700;
     }
 
     #cropAndApply {
-      background-color: #10B981;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
     }
-    #cropAndApply:hover {
-      background-color: #059669;
+
+    @media (max-width: 1080px) {
+      .editor-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-panel {
+        padding-top: 0;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 12px 40px;
+      }
+
+      .controls-panel,
+      .preview-panel {
+        padding: 16px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preset-row {
+        grid-template-columns: repeat(3, minmax(44px, 1fr));
+      }
+
+      #thumbnail-container {
+        transform: scale(0.58);
+        margin-bottom: -200px;
+      }
+
+      .content-side {
+        padding: 40px 26px 28px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h1>Gerador de Thumbnail Personalizável</h1>
-
-  <div class="controls">
-    
-    <div class="input-group wide">
-      <label>Título Principal</label>
-      <input type="text" id="inputTitle" value="Samuel Santos" oninput="updateContent()">
-    </div>
-    
-    <div class="input-group wide">
-      <label>Subtítulo</label>
-      <input type="text" id="inputSubtitle" value="Especialista em Geotecnologias" oninput="updateContent()">
+  <div class="app-shell">
+    <div class="topbar">
+      <h1>Gerador de Thumbnail</h1>
+      <div class="topbar-badge"><i class="fas fa-palette"></i> Estilo premium</div>
     </div>
 
-    <div class="input-group">
-      <label>Fonte</label>
-      <select id="fontSelect" onchange="updateFont()">
-        <option value="'Inter', sans-serif">Inter</option>
-        <option value="'Space Grotesk', 'Inter', sans-serif">Space Grotesk</option>
-        <option value="'Manrope', 'Inter', sans-serif">Manrope</option>
-        <option value="'Poppins', 'Inter', sans-serif">Poppins</option>
-        <option value="'Montserrat', 'Inter', sans-serif">Montserrat</option>
-        <option value="'Source Sans 3', 'Inter', sans-serif">Source Sans 3</option>
-        <option value="'Merriweather', serif">Merriweather</option>
-        <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
-      </select>
-    </div>
-    
-    <div class="input-group">
-      <label>Cor de Fundo Escuro</label>
-      <div class="color-input-block">
-        <input type="color" id="inputBgDark" value="#0F172A" oninput="syncHexInput('bgDark')">
-        <input type="text" id="inputBgDarkHex" value="#0F172A" maxlength="7" oninput="handleHexInput('bgDark', this.value)">
-      </div>
-    </div>
-    
-    <div class="input-group">
-      <label>Cor de Destaque</label>
-      <div class="color-input-block">
-        <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="syncHexInput('accentPrimary')">
-        <input type="text" id="inputAccentPrimaryHex" value="#2563EB" maxlength="7" oninput="handleHexInput('accentPrimary', this.value)">
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label>Cor dos Ícones</label>
-      <div class="color-input-block">
-        <input type="color" id="inputIconColor" value="#F8FAFC" oninput="syncHexInput('iconColor')">
-        <input type="text" id="inputIconColorHex" value="#F8FAFC" maxlength="7" oninput="handleHexInput('iconColor', this.value)">
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label>Foto de Perfil</label>
-      <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
-    </div>
-    
-    <button onclick="downloadThumbnail()"><i class="fas fa-download"></i> Baixar PNG</button>
-    
-    <div class="icon-picker">
-      <label>Tecnologias (Max 5)</label>
-      <div class="icon-checkbox-group" id="iconCheckboxes"></div>
-    </div>
-
-    <div class="input-group wide" style="margin-top: 8px;">
-      <label>Cartela de Cores</label>
-      <div class="color-palette" id="colorPalette"></div>
-    </div>
-  </div>
-
-  <div id="thumbnail-container">
-    <div class="bg-grid"></div>
-    <div class="bg-glow"></div>
-
-    <div class="content-side">
-      <div class="badge">
-        <i class="fas fa-code"></i> <span>Portfólio Profissional</span>
-      </div>
-      
-      <h1 class="main-title" id="displayTitle">Samuel Santos</h1>
-      
-      <p class="subtitle" id="displaySubtitle">
-        Especialista em Geotecnologias
-      </p>
-
-      <div class="tech-stack" id="displayTechStack"></div>
-    </div>
-
-    <div class="image-side">
-      <div class="image-blob-container">
-        <div class="blob-bg"></div>
-        <div class="profile-img-frame">
-          <img id="displayImage" class="profile-img" style="display:none;">
-          <div class="placeholder-text">Carregando...</div>
+    <div class="editor-grid">
+      <section class="panel controls-panel">
+        <div class="preset-area">
+          <div class="section-header">
+            <div class="section-title">Paleta de cores</div>
+          </div>
+          <div class="preset-row" id="presetRow"></div>
         </div>
-      </div>
+
+        <div class="form-grid">
+          <div class="input-group wide">
+            <label>Título principal</label>
+            <input type="text" id="inputTitle" value="Samuel Santos" oninput="updateContent()">
+          </div>
+
+          <div class="input-group wide">
+            <label>Badge / etiqueta</label>
+            <input type="text" id="inputBadge" value="Portfólio Profissional" oninput="updateContent()">
+          </div>
+
+          <div class="input-group wide">
+            <label>Subtítulo</label>
+            <input type="text" id="inputSubtitle" value="Especialista em Geotecnologias" oninput="updateContent()">
+          </div>
+
+          <div class="input-group">
+            <label>Fonte</label>
+            <select id="fontSelect" onchange="updateFont()">
+              <option value="'Inter', sans-serif">Inter</option>
+              <option value="'Space Grotesk', 'Inter', sans-serif">Space Grotesk</option>
+              <option value="'Manrope', 'Inter', sans-serif">Manrope</option>
+              <option value="'Poppins', 'Inter', sans-serif">Poppins</option>
+              <option value="'Montserrat', 'Inter', sans-serif">Montserrat</option>
+              <option value="'Source Sans 3', 'Inter', sans-serif">Source Sans 3</option>
+              <option value="'Merriweather', serif">Merriweather</option>
+              <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Foto de perfil</label>
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+          </div>
+
+          <div class="input-group">
+            <label>Fundo escuro</label>
+            <div class="color-control">
+              <input type="color" id="inputBgDark" value="#0F172A" oninput="syncHexInput('bgDark')">
+              <input type="text" id="inputBgDarkHex" value="#0F172A" maxlength="7" oninput="handleHexInput('bgDark', this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Destaque</label>
+            <div class="color-control">
+              <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="syncHexInput('accentPrimary')">
+              <input type="text" id="inputAccentPrimaryHex" value="#2563EB" maxlength="7" oninput="handleHexInput('accentPrimary', this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Texto</label>
+            <div class="color-control">
+              <input type="color" id="inputTextColor" value="#FFFFFF" oninput="syncHexInput('textColor')">
+              <input type="text" id="inputTextColorHex" value="#FFFFFF" maxlength="7" oninput="handleHexInput('textColor', this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Ícones</label>
+            <div class="color-control">
+              <input type="color" id="inputIconColor" value="#F8FAFC" oninput="syncHexInput('iconColor')">
+              <input type="text" id="inputIconColorHex" value="#F8FAFC" maxlength="7" oninput="handleHexInput('iconColor', this.value)">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Subtítulo</label>
+            <div class="color-control">
+              <input type="color" id="inputSubtitleColor" value="#A5B4CF" oninput="syncHexInput('subtitleColor')">
+              <input type="text" id="inputSubtitleColorHex" value="#A5B4CF" maxlength="7" oninput="handleHexInput('subtitleColor', this.value)">
+            </div>
+          </div>
+
+          <div class="input-group icon-picker">
+            <label>Tecnologias (máx. 5)</label>
+            <div class="icon-box">
+              <div class="icon-checkbox-group" id="iconCheckboxes"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="primary-btn" onclick="downloadThumbnail()"><i class="fas fa-download"></i> Baixar PNG</button>
+        </div>
+      </section>
+
+      <aside class="panel preview-panel">
+        <div class="preview-shell">
+          <div id="thumbnail-container">
+            <div class="bg-grid"></div>
+            <div class="bg-glow"></div>
+
+            <div class="content-side">
+              <div class="badge" id="displayBadge">
+                <i class="fas fa-code"></i>
+                <span>Portfólio Profissional</span>
+              </div>
+
+              <h1 class="main-title" id="displayTitle">Samuel Santos</h1>
+              <p class="subtitle" id="displaySubtitle">Especialista em Geotecnologias</p>
+
+              <div class="tech-stack" id="displayTechStack"></div>
+            </div>
+
+            <div class="image-side">
+              <div class="image-blob-container">
+                <div class="blob-bg"></div>
+                <div class="profile-img-frame">
+                  <img id="displayImage" class="profile-img" style="display: none;">
+                  <div class="placeholder-text">Carregando...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
   <div id="cropModal" class="modal-overlay">
     <div class="modal-content">
-      <h2>Ajustar Imagem de Perfil (1:1)</h2>
+      <h2>Ajustar imagem</h2>
       <div class="cropper-container-box">
         <img id="imageCropper" alt="Imagem para recorte">
       </div>
       <div class="cropper-buttons">
-        <button id="cropAndApply"><i class="fas fa-check"></i> Aplicar Recorte</button>
+        <button id="cropAndApply"><i class="fas fa-check"></i> Aplicar</button>
         <button onclick="closeCropper()"><i class="fas fa-times"></i> Cancelar</button>
       </div>
     </div>
@@ -554,6 +725,16 @@
   <script>
     let cropper;
     const root = document.documentElement;
+
+    const presetPalettes = [
+      { name: 'Aipim', bg: '#0F172A', accent: '#22C55E', text: '#FFFFFF', icon: '#F8FAFC', subtitle: '#B7C5DE' },
+      { name: 'Ocean', bg: '#061B2D', accent: '#2DD4BF', text: '#ECFEFF', icon: '#E0F2FE', subtitle: '#A9CDE3' },
+      { name: 'Sunset', bg: '#1F2937', accent: '#F97316', text: '#FFF7ED', icon: '#FFF7ED', subtitle: '#F5CC9C' },
+      { name: 'Violet', bg: '#111827', accent: '#A78BFA', text: '#F5F3FF', icon: '#F5F3FF', subtitle: '#CCC3F2' },
+      { name: 'Rose', bg: '#1F1B2D', accent: '#F472B6', text: '#FDF2F8', icon: '#FDF2F8', subtitle: '#F7D4EC' },
+      { name: 'Lime', bg: '#132A13', accent: '#84CC16', text: '#F0FDF4', icon: '#F0FDF4', subtitle: '#CFEFC0' },
+      { name: 'Slate', bg: '#111827', accent: '#60A5FA', text: '#F8FAFC', icon: '#F8FAFC', subtitle: '#B7C4D7' }
+    ];
 
     const allTechIcons = [
       { name: "Python", class: "fab fa-python" },
@@ -572,7 +753,6 @@
       { name: "Figma", class: "fab fa-figma" },
       { name: "Database", class: "fas fa-database" },
       { name: "PostgreSQL", class: "fas fa-server" },
-      { name: "MySQL", class: "fas fa-database" },
       { name: "MongoDB", class: "fas fa-database" },
       { name: "Redis", class: "fas fa-memory" },
       { name: "Cloud", class: "fas fa-cloud" },
@@ -588,23 +768,28 @@
       { name: "C#", class: "fas fa-code" }
     ];
 
-    const colorPalettes = [
-      { name: "Aipim", bg: "#0F172A", accent: "#22C55E", icon: "#F8FAFC" },
-      { name: "Ocean", bg: "#061B2D", accent: "#2DD4BF", icon: "#E0F2FE" },
-      { name: "Sunset", bg: "#1F2937", accent: "#F97316", icon: "#FFF7ED" },
-      { name: "Violet", bg: "#111827", accent: "#A78BFA", icon: "#F5F3FF" },
-      { name: "Rose", bg: "#1F1B2D", accent: "#F472B6", icon: "#FDF2F8" },
-      { name: "Lime", bg: "#132A13", accent: "#84CC16", icon: "#F0FDF4" }
-    ];
+    function normalizeHex(value, fallback = '#000000') {
+      if (!value) return fallback;
+      let raw = value.trim();
+      if (!raw) return fallback;
 
-    const fileToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    };
+      if (raw.startsWith('#')) raw = raw.slice(1);
+      if (raw.length === 3) raw = raw.split('').map(ch => ch + ch).join('');
+      if (/^[0-9a-fA-F]{6}$/.test(raw)) return '#' + raw.toUpperCase();
+
+      if (raw.startsWith('rgb')) {
+        const match = raw.match(/rgba?\(([^)]+)\)/i);
+        if (match) {
+          const channels = match[1].split(',').map(part => Number(part.trim()));
+          if (channels.length >= 3 && channels.every(n => !Number.isNaN(n))) {
+            const [r, g, b] = channels.slice(0, 3).map(n => Math.max(0, Math.min(255, Math.round(n))));
+            return '#' + [r, g, b].map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase();
+          }
+        }
+      }
+
+      return fallback;
+    }
 
     function hexToRgba(hex, opacity) {
       const normalized = normalizeHex(hex, '#2563EB');
@@ -614,46 +799,58 @@
       return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
 
-    function normalizeHex(value, fallback = '#000000') {
-      if (!value) return fallback;
-      let raw = value.trim();
-      if (!raw) return fallback;
+    function applyPreset(palette) {
+      document.getElementById('inputBgDark').value = palette.bg;
+      document.getElementById('inputBgDarkHex').value = palette.bg;
+      document.getElementById('inputAccentPrimary').value = palette.accent;
+      document.getElementById('inputAccentPrimaryHex').value = palette.accent;
+      document.getElementById('inputTextColor').value = palette.text;
+      document.getElementById('inputTextColorHex').value = palette.text;
+      document.getElementById('inputIconColor').value = palette.icon;
+      document.getElementById('inputIconColorHex').value = palette.icon;
+      document.getElementById('inputSubtitleColor').value = palette.subtitle;
+      document.getElementById('inputSubtitleColorHex').value = palette.subtitle;
+      updateColors();
+      document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+      const active = [...document.querySelectorAll('.preset-btn')].find(btn => btn.dataset.name === palette.name);
+      if (active) active.classList.add('active');
+    }
 
-      if (raw.startsWith('rgb')) {
-        const match = raw.match(/rgba?\(([^)]+)\)/i);
-        if (match) {
-          const channels = match[1].split(',').map(part => Number(part.trim()));
-          if (channels.length >= 3 && channels.every(n => !Number.isNaN(n))) {
-            const [r, g, b] = channels.slice(0, 3).map(n => Math.max(0, Math.min(255, Math.round(n))));
-            return `#${[r, g, b].map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
-          }
-        }
-        return fallback;
-      }
+    function renderPresets() {
+      const row = document.getElementById('presetRow');
+      row.innerHTML = '';
 
-      if (raw.startsWith('#')) raw = raw.slice(1);
-      if (raw.length === 3) {
-        raw = raw.split('').map(char => char + char).join('');
-      }
-      if (/^[0-9a-fA-F]{6}$/.test(raw)) {
-        return `#${raw.toUpperCase()}`;
-      }
+      presetPalettes.forEach(palette => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'preset-btn';
+        btn.title = palette.name;
+        btn.dataset.name = palette.name;
+        btn.style.setProperty('--preset-a', palette.accent);
+        btn.style.setProperty('--preset-b', palette.icon);
+        btn.innerHTML = '<span style="position:relative;z-index:1;display:block;width:100%;height:100%;"></span>';
+        btn.addEventListener('click', () => applyPreset(palette));
+        row.appendChild(btn);
+      });
 
-      return fallback;
+      const first = document.querySelector('.preset-btn');
+      if (first) first.classList.add('active');
     }
 
     function syncHexInput(type) {
-      const colorInputMap = {
-        bgDark: { picker: 'inputBgDark', text: 'inputBgDarkHex' },
-        accentPrimary: { picker: 'inputAccentPrimary', text: 'inputAccentPrimaryHex' },
-        iconColor: { picker: 'inputIconColor', text: 'inputIconColorHex' }
+      const mapping = {
+        bgDark: ['inputBgDark', 'inputBgDarkHex'],
+        accentPrimary: ['inputAccentPrimary', 'inputAccentPrimaryHex'],
+        textColor: ['inputTextColor', 'inputTextColorHex'],
+        iconColor: ['inputIconColor', 'inputIconColorHex'],
+        subtitleColor: ['inputSubtitleColor', 'inputSubtitleColorHex']
       };
 
-      const selected = colorInputMap[type];
-      if (!selected) return;
+      const keys = mapping[type];
+      if (!keys) return;
 
-      const picker = document.getElementById(selected.picker);
-      const text = document.getElementById(selected.text);
+      const picker = document.getElementById(keys[0]);
+      const text = document.getElementById(keys[1]);
       const value = normalizeHex(picker.value, text.value || '#000000');
       picker.value = value;
       text.value = value;
@@ -661,64 +858,54 @@
     }
 
     function handleHexInput(type, rawValue) {
-      const value = normalizeHex(rawValue, document.getElementById(`input${type === 'bgDark' ? 'BgDark' : type === 'accentPrimary' ? 'AccentPrimary' : 'IconColor'}Color`).value || '#000000');
-      const colorInput = document.getElementById(type === 'bgDark' ? 'inputBgDark' : type === 'accentPrimary' ? 'inputAccentPrimary' : 'inputIconColor');
-      const textInput = document.getElementById(type === 'bgDark' ? 'inputBgDarkHex' : type === 'accentPrimary' ? 'inputAccentPrimaryHex' : 'inputIconColorHex');
-      colorInput.value = value;
-      textInput.value = value;
+      const mapping = {
+        bgDark: ['inputBgDark', 'inputBgDarkHex'],
+        accentPrimary: ['inputAccentPrimary', 'inputAccentPrimaryHex'],
+        textColor: ['inputTextColor', 'inputTextColorHex'],
+        iconColor: ['inputIconColor', 'inputIconColorHex'],
+        subtitleColor: ['inputSubtitleColor', 'inputSubtitleColorHex']
+      };
+
+      const keys = mapping[type];
+      if (!keys) return;
+
+      const value = normalizeHex(rawValue, document.getElementById(keys[0]).value || '#000000');
+      document.getElementById(keys[0]).value = value;
+      document.getElementById(keys[1]).value = value;
       updateColors();
     }
 
     function updateColors() {
       const darkHex = normalizeHex(document.getElementById('inputBgDark').value, '#0F172A');
       const accentHex = normalizeHex(document.getElementById('inputAccentPrimary').value, '#2563EB');
+      const textHex = normalizeHex(document.getElementById('inputTextColor').value, '#FFFFFF');
       const iconHex = normalizeHex(document.getElementById('inputIconColor').value, '#F8FAFC');
+      const subtitleHex = normalizeHex(document.getElementById('inputSubtitleColor').value, '#A5B4CF');
 
       root.style.setProperty('--bg-dark', darkHex);
       root.style.setProperty('--accent-primary', accentHex);
+      root.style.setProperty('--text-color', textHex);
       root.style.setProperty('--icon-color', iconHex);
-
-      const accentSecondary = hexToRgba(accentHex, 0.8)
-        .replace(/rgba\(([^)]+)\)/, (_, rgb) => {
-          const [r, g, b] = rgb.split(',').map(Number);
-          return `rgb(${Math.max(0, r - 20)}, ${Math.max(0, g - 20)}, ${Math.max(0, b - 20)})`;
-        });
-      root.style.setProperty('--accent-secondary', accentSecondary);
-
-      root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.2));
-      root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.4));
+      root.style.setProperty('--subtitle-color', subtitleHex);
+      root.style.setProperty('--tag-text-color', textHex);
+      root.style.setProperty('--accent-secondary', hexToRgba(accentHex, 0.85).replace(/rgba\(([^)]+)\)/, (_, rgb) => {
+        const [r, g, b] = rgb.split(',').map(Number);
+        return `rgb(${Math.max(0, r - 18)}, ${Math.max(0, g - 18)}, ${Math.max(0, b - 18)})`;
+      }));
+      root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.18));
+      root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.38));
       root.style.setProperty('--bg-dark-transparent', hexToRgba(darkHex, 0));
+
       document.getElementById('inputBgDark').value = darkHex;
       document.getElementById('inputBgDarkHex').value = darkHex;
       document.getElementById('inputAccentPrimary').value = accentHex;
       document.getElementById('inputAccentPrimaryHex').value = accentHex;
+      document.getElementById('inputTextColor').value = textHex;
+      document.getElementById('inputTextColorHex').value = textHex;
       document.getElementById('inputIconColor').value = iconHex;
       document.getElementById('inputIconColorHex').value = iconHex;
-    }
-
-    function renderColorSwatches() {
-      const paletteContainer = document.getElementById('colorPalette');
-      paletteContainer.innerHTML = '';
-
-      colorPalettes.forEach((palette) => {
-        const swatch = document.createElement('button');
-        swatch.type = 'button';
-        swatch.className = 'swatch';
-        swatch.title = `${palette.name} (${palette.bg}, ${palette.accent}, ${palette.icon})`;
-        swatch.style.background = `linear-gradient(135deg, ${palette.accent}, ${palette.icon})`;
-        swatch.setAttribute('aria-label', `${palette.name} palette`);
-
-        swatch.addEventListener('click', () => {
-          document.getElementById('inputBgDark').value = palette.bg;
-          document.getElementById('inputAccentPrimary').value = palette.accent;
-          document.getElementById('inputIconColor').value = palette.icon;
-          updateColors();
-          document.querySelectorAll('.swatch').forEach(btn => btn.classList.remove('active'));
-          swatch.classList.add('active');
-        });
-
-        paletteContainer.appendChild(swatch);
-      });
+      document.getElementById('inputSubtitleColor').value = subtitleHex;
+      document.getElementById('inputSubtitleColorHex').value = subtitleHex;
     }
 
     function updateFont() {
@@ -766,7 +953,6 @@
       displayContainer.innerHTML = '';
 
       const iconsToDisplay = selectedCheckboxes.slice(0, 5);
-
       iconsToDisplay.forEach(checkbox => {
         const iconElement = document.createElement('i');
         iconElement.className = `${checkbox.value} tech-icon`;
@@ -785,16 +971,28 @@
       }
     }
 
+    function updateContent() {
+      document.getElementById('displayTitle').innerText = document.getElementById('inputTitle').value;
+      document.getElementById('displaySubtitle').innerText = document.getElementById('inputSubtitle').value;
+      const badge = document.getElementById('displayBadge');
+      const badgeText = document.getElementById('inputBadge').value || 'Portfólio Profissional';
+      badge.innerHTML = `<i class="fas fa-code"></i><span>${badgeText}</span>`;
+    }
+
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
     function openCropper(imageUrl) {
       const modal = document.getElementById('cropModal');
       const image = document.getElementById('imageCropper');
-
       image.src = imageUrl;
       modal.style.display = 'flex';
 
-      if (cropper) {
-        cropper.destroy();
-      }
+      if (cropper) cropper.destroy();
 
       cropper = new Cropper(image, {
         aspectRatio: 1,
@@ -815,62 +1013,24 @@
     }
 
     document.getElementById('cropAndApply').addEventListener('click', () => {
-      if (cropper) {
-        const croppedCanvas = cropper.getCroppedCanvas({
-          width: 420,
-          height: 420,
-        });
-        const base64 = croppedCanvas.toDataURL('image/jpeg');
-
-        const output = document.getElementById('displayImage');
-        output.src = base64;
-        output.style.display = 'block';
-        document.querySelector('.placeholder-text').style.display = 'none';
-
-        closeCropper();
-      }
+      if (!cropper) return;
+      const croppedCanvas = cropper.getCroppedCanvas({ width: 420, height: 420 });
+      const base64 = croppedCanvas.toDataURL('image/jpeg');
+      const output = document.getElementById('displayImage');
+      output.src = base64;
+      output.style.display = 'block';
+      document.querySelector('.placeholder-text').style.display = 'none';
+      closeCropper();
     });
-
-    window.onload = async () => {
-      updateContent();
-      updateColors();
-      renderIconCheckboxes();
-      renderColorSwatches();
-      updateFont();
-
-      try {
-        const response = await fetch('Perfil2.jpg');
-        if (response.ok) {
-          const blob = await response.blob();
-          const base64 = await fileToBase64(blob);
-
-          const img = document.getElementById('displayImage');
-          img.src = base64;
-          img.style.display = 'block';
-          document.querySelector('.placeholder-text').style.display = 'none';
-        } else {
-          document.querySelector('.placeholder-text').innerText = 'Carregue sua foto';
-        }
-      } catch (e) {
-        console.log('Imagem padrão não encontrada ou erro ao converter. Usuário deve fazer upload.', e);
-        document.querySelector('.placeholder-text').innerText = 'Carregue sua foto';
-      }
-    };
-
-    function updateContent() {
-      document.getElementById('displayTitle').innerText = document.getElementById('inputTitle').value;
-      document.getElementById('displaySubtitle').innerText = document.getElementById('inputSubtitle').value;
-    }
 
     async function handleImageUpload(event) {
       const file = event.target.files[0];
-      if (file) {
-        try {
-          const base64 = await fileToBase64(file);
-          openCropper(base64);
-        } catch (e) {
-          console.error('Erro ao ler arquivo', e);
-        }
+      if (!file) return;
+      try {
+        const base64 = await fileToBase64(file);
+        openCropper(base64);
+      } catch (e) {
+        console.error('Erro ao ler arquivo', e);
       }
     }
 
@@ -890,7 +1050,7 @@
           allowTaint: true
         }).then(canvas => {
           const link = document.createElement('a');
-          link.download = 'samuel-santos-thumbnail.png';
+          link.download = 'thumbnail-personalizada.png';
           link.href = canvas.toDataURL('image/png');
           link.click();
 
@@ -898,27 +1058,49 @@
           element.style.marginBottom = currentMargin;
         }).catch(err => {
           console.error('Erro ao gerar imagem:', err);
-
-          const errorMessage = 'Erro ao gerar a imagem. Verifique o console (F12).';
           const modal = document.createElement('div');
           modal.style.cssText = `
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 2001; text-align: center; font-family: 'Inter', sans-serif;
+            background: white; padding: 20px; border-radius: 12px; box-shadow: 0 16px 30px rgba(15,23,42,0.2);
+            z-index: 2001; text-align: center; font-family: 'Inter', sans-serif; color: #0f172a;
           `;
           modal.innerHTML = `
-            <p style="color: #EF4444; font-weight: 700;">Erro na Captura!</p>
-            <p style="margin-top: 10px; color: #333;">${errorMessage}</p>
-            <button onclick="this.parentNode.remove()" style="margin-top: 15px; background-color: #EF4444; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Fechar</button>
+            <p style="font-weight: 800; color: #ef4444;">Erro na captura</p>
+            <p style="margin-top: 10px;">Verifique o console (F12) e tente novamente.</p>
+            <button onclick="this.parentNode.remove()" style="margin-top: 18px; background:#ef4444; color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer;">Fechar</button>
           `;
           document.body.appendChild(modal);
 
           element.style.transform = currentTransform;
           element.style.marginBottom = currentMargin;
         });
-      }, 100);
+      }, 80);
     }
-  </script>
 
+    window.onload = async () => {
+      renderPresets();
+      renderIconCheckboxes();
+      updateContent();
+      updateColors();
+      updateFont();
+
+      try {
+        const response = await fetch('Perfil2.jpg');
+        if (response.ok) {
+          const blob = await response.blob();
+          const base64 = await fileToBase64(blob);
+          const img = document.getElementById('displayImage');
+          img.src = base64;
+          img.style.display = 'block';
+          document.querySelector('.placeholder-text').style.display = 'none';
+        } else {
+          document.querySelector('.placeholder-text').textContent = 'Carregue sua foto';
+        }
+      } catch (error) {
+        console.log('Imagem padrão não encontrada ou erro ao converter.', error);
+        document.querySelector('.placeholder-text').textContent = 'Carregue sua foto';
+      }
+    };
+  </script>
 </body>
 </html>
