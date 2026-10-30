@@ -18,35 +18,31 @@
       --icon-color: #F8FAFC;
       --text-color: #FFFFFF;
       --subtitle-color: #A5B4CF;
-      --tag-text-color: #EAF2FF;
       --page-bg: #eef3f9;
-      --panel-bg: #ffffff;
-      --soft-border: rgba(148, 163, 184, 0.28);
-      --muted: #64748b;
-      --shadow: 0 16px 38px rgba(15, 23, 42, 0.12);
+      --panel-bg: rgba(255,255,255,0.8);
+      --panel-border: rgba(148, 163, 184, 0.24);
+      --soft-field: rgba(248,250,252,0.95);
+      --soft-label: #475569;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.09);
       --font-body: 'Inter', sans-serif;
       --font-heading: 'Space Grotesk', 'Inter', sans-serif;
       --font-subtitle: 'Merriweather', serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: var(--font-body);
       background:
-        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 28%),
-        linear-gradient(180deg, #f5f8fc 0%, var(--page-bg) 100%);
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 18%),
+        linear-gradient(180deg, #f6f8fc 0%, var(--page-bg) 100%);
       color: #0f172a;
       min-height: 100vh;
-      padding: 32px 20px 80px;
+      padding: 32px 16px 60px;
     }
 
     .app-shell {
-      max-width: 1360px;
+      max-width: 1320px;
       margin: 0 auto;
     }
 
@@ -54,121 +50,92 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 22px;
+      gap: 12px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
     }
 
     .topbar h1 {
-      font-size: clamp(1.8rem, 2vw, 2.4rem);
+      font-size: clamp(1.7rem, 2vw, 2.4rem);
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.05em;
       color: #0f172a;
     }
 
-    .topbar-badge {
+    .mini-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(37, 99, 235, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.16);
-      color: #1d4ed8;
       padding: 8px 12px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      background: rgba(15,23,42,0.04);
+      border: 1px solid rgba(15,23,42,0.08);
+      font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
+      color: #475569;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 22px;
+      align-items: start;
     }
 
     .panel {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
       border-radius: 24px;
       box-shadow: var(--shadow);
       overflow: hidden;
-    }
-
-    .editor-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-      gap: 22px;
-      align-items: start;
+      backdrop-filter: blur(10px);
     }
 
     .controls-panel {
       padding: 22px;
     }
 
-    .preset-area {
-      margin-bottom: 16px;
-    }
-
-    .section-header {
+    .controls-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
     .section-title {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #475569;
+      color: var(--soft-label);
       font-weight: 800;
     }
 
-    .preset-row {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(44px, 1fr));
-      gap: 10px;
-    }
-
-    .preset-btn {
-      appearance: none;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      border-radius: 14px;
-      min-height: 52px;
-      background: linear-gradient(135deg, #fff 0%, #eef3ff 100%);
+    .ghost-btn {
+      border: 1px solid rgba(148,163,184,0.35);
+      background: rgba(255,255,255,0.7);
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.07);
-    }
-
-    .preset-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
-    }
-
-    .preset-btn::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--preset-a), var(--preset-b));
-    }
-
-    .preset-btn.active {
-      border-color: rgba(15, 23, 42, 0.2);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25), 0 12px 24px rgba(15, 23, 42, 0.12);
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 16px;
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .input-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       min-width: 0;
     }
 
@@ -177,68 +144,71 @@
     }
 
     label {
-      font-size: 0.75rem;
-      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #475569;
+      color: var(--soft-label);
       font-weight: 800;
     }
 
     input[type="text"],
     select {
-      border: 1px solid var(--soft-border);
-      background: rgba(248, 250, 252, 0.9);
+      width: 100%;
+      border: 1px solid rgba(148,163,184,0.35);
       border-radius: 12px;
+      background: var(--soft-field);
       padding: 11px 12px;
       font-size: 0.96rem;
-      font-family: inherit;
       color: #0f172a;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+      font-family: inherit;
     }
 
     input[type="text"]:focus,
     select:focus {
-      outline: none;
-      border-color: rgba(37, 99, 235, 0.45);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+      outline: 0;
+      border-color: rgba(37,99,235,0.5);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
     }
 
-    .color-control {
+    .color-action {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      background: rgba(248, 250, 252, 0.9);
-      border: 1px solid var(--soft-border);
+      border: 1px solid rgba(148,163,184,0.35);
       border-radius: 12px;
-      padding: 6px 8px 6px 10px;
+      background: var(--soft-field);
+      padding: 7px 10px;
     }
 
-    .color-control input[type="color"] {
-      width: 40px;
-      height: 38px;
+    .color-preview {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(15,23,42,0.12);
+      background: linear-gradient(135deg, #0F172A, #2563EB);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+
+    .color-action button {
+      width: 100%;
       border: none;
       background: transparent;
-      padding: 0;
+      color: #0f172a;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
       cursor: pointer;
-    }
-
-    .color-control input[type="text"] {
-      flex: 1;
-      border: none;
-      background: transparent;
+      text-align: left;
       padding: 0;
-      font-weight: 600;
-    }
-
-    .icon-picker {
-      grid-column: 1 / -1;
-      margin-top: 4px;
     }
 
     .icon-box {
-      border: 1px solid var(--soft-border);
-      background: rgba(248, 250, 252, 0.9);
-      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: var(--soft-field);
+      border-radius: 14px;
       padding: 12px;
     }
 
@@ -253,27 +223,23 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: rgba(255,255,255,0.8);
       font-size: 0.78rem;
-      letter-spacing: 0.02em;
+      font-weight: 600;
+      letter-spacing: 0.01em;
       text-transform: none;
       color: #334155;
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid rgba(148, 163, 184, 0.3);
-      border-radius: 999px;
-      padding: 6px 10px;
       cursor: pointer;
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-
-    .icon-checkbox-group label:hover {
-      background: rgba(241, 245, 249, 1);
-      border-color: rgba(148, 163, 184, 0.5);
     }
 
     .icon-checkbox-group input[type="checkbox"] {
       accent-color: #2563eb;
       width: 14px;
       height: 14px;
+      cursor: pointer;
     }
 
     .action-row {
@@ -283,53 +249,46 @@
     }
 
     .primary-btn {
+      border: none;
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
       color: white;
-      border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 12px 18px;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       cursor: pointer;
-      box-shadow: 0 12px 18px rgba(37, 99, 235, 0.2);
-      transition: transform 0.15s ease, filter 0.15s ease;
-    }
-
-    .primary-btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
+      box-shadow: 0 10px 18px rgba(37,99,235,0.22);
     }
 
     .preview-panel {
-      padding: 18px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(248,250,252,0.7));
+      padding: 18px;
+      min-height: 640px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(248,250,252,0.7));
     }
 
     .preview-shell {
       width: 100%;
       display: flex;
       justify-content: center;
-      padding-top: 10px;
+      padding-top: 6px;
     }
 
     #thumbnail-container {
-      width: min(100%, 1000px);
-      max-width: 1000px;
-      height: 525px;
+      width: min(100%, 980px);
+      height: 520px;
       background: var(--bg-dark);
       position: relative;
       overflow: hidden;
       display: flex;
-      box-shadow: 0 24px 40px rgba(15, 23, 42, 0.18);
-      border-radius: 20px;
-      transform-origin: top center;
-      transform: scale(0.85);
-      margin-bottom: -140px;
-      border: 1px solid rgba(148, 163, 184, 0.15);
+      box-shadow: 0 20px 38px rgba(15, 23, 42, 0.18);
+      border-radius: 18px;
+      transform-origin: center top;
+      transform: scale(0.88);
+      margin-bottom: -120px;
+      border: 1px solid rgba(148,163,184,0.15);
     }
 
     .bg-grid {
@@ -339,23 +298,23 @@
         linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
       background-size: 38px 38px;
-      opacity: 0.42;
+      opacity: 0.44;
       z-index: 1;
     }
 
     .bg-glow {
       position: absolute;
-      top: -18%;
       right: -10%;
-      width: 560px;
-      height: 560px;
-      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 64%);
+      top: -14%;
+      width: 540px;
+      height: 540px;
+      background: radial-gradient(circle, rgba(255,255,255,0.09), transparent 64%);
       z-index: 1;
     }
 
     .content-side {
-      flex: 1.45;
-      padding: 58px 52px 40px;
+      flex: 1.42;
+      padding: 52px 48px 36px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -368,42 +327,42 @@
       align-items: center;
       gap: 8px;
       width: fit-content;
-      background: rgba(255,255,255,0.08);
-      color: var(--tag-text-color);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
       padding: 9px 15px;
-      font-size: 0.92rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-color);
+      font-size: 0.96rem;
       font-weight: 700;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .main-title {
-      font-family: var(--font-heading);
       color: var(--text-color);
-      font-size: clamp(2.3rem, 3vw, 4rem);
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 3vw, 4rem);
       font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.055em;
-      margin-bottom: 18px;
+      line-height: 0.96;
+      letter-spacing: -0.06em;
+      margin-bottom: 16px;
       max-width: 90%;
     }
 
     .subtitle {
       color: var(--subtitle-color);
       font-family: var(--font-subtitle);
-      font-size: clamp(1.05rem, 1.6vw, 1.8rem);
+      font-size: clamp(1.1rem, 1.7vw, 1.8rem);
       line-height: 1.3;
-      max-width: 85%;
+      max-width: 86%;
       font-weight: 300;
     }
 
     .tech-stack {
-      margin-top: 28px;
+      margin-top: 30px;
       display: flex;
-      gap: 16px;
+      gap: 18px;
       flex-wrap: wrap;
-      max-width: 80%;
+      max-width: 82%;
     }
 
     .tech-icon {
@@ -434,9 +393,9 @@
       position: absolute;
       inset: 0;
       background: var(--accent-primary);
-      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
       opacity: 0.2;
-      animation: morph 9s ease-in-out infinite;
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      animation: morph 8s ease-in-out infinite;
     }
 
     .profile-img-frame {
@@ -446,11 +405,11 @@
       overflow: hidden;
       position: relative;
       border: 5px solid rgba(255,255,255,0.1);
-      background: rgba(15,23,42,0.32);
+      background: rgba(15,23,42,0.28);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+      box-shadow: 0 12px 28px rgba(15,23,42,0.15);
     }
 
     .profile-img {
@@ -461,11 +420,10 @@
     }
 
     .placeholder-text {
-      color: rgba(255,255,255,0.32);
-      text-align: center;
-      font-size: 1.05rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.45);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
 
     @keyframes morph {
@@ -478,96 +436,225 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background-color: rgba(15, 23, 42, 0.76);
+      background: rgba(15, 23, 42, 0.72);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 2000;
+      padding: 20px;
     }
 
-    .modal-content {
-      background: white;
-      padding: 22px;
-      border-radius: 18px;
-      max-width: 90vw;
-      width: 620px;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
-    }
-
-    .modal-content h2 {
-      font-size: 1.3rem;
-      margin-bottom: 16px;
-    }
-
-    .cropper-container-box {
-      max-width: 100%;
-      max-height: 420px;
+    .modal-card {
+      width: min(860px, 92vw);
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 20px 52px rgba(15, 23, 42, 0.22);
+      border: 1px solid rgba(148,163,184,0.2);
       overflow: hidden;
-      margin-bottom: 18px;
-      border-radius: 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
     }
 
-    #imageCropper {
-      display: block;
-      max-width: 100%;
-    }
-
-    .cropper-buttons {
+    .modal-header {
       display: flex;
-      gap: 10px;
+      align-items: center;
       justify-content: space-between;
+      gap: 10px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(148,163,184,0.18);
     }
 
-    .cropper-buttons button {
-      flex: 1;
-      border-radius: 12px;
-      padding: 12px 14px;
+    .modal-header h3 {
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+    }
+
+    .close-modal {
+      background: rgba(15,23,42,0.04);
+      border: 1px solid rgba(148,163,184,0.18);
+      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      color: #475569;
       font-weight: 700;
     }
 
-    #cropAndApply {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
+    .modal-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+      padding: 18px 20px 20px;
+    }
+
+    .picker-box,
+    .palette-box {
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 16px;
+      background: #f8fafc;
+      padding: 14px;
+    }
+
+    .picker-section {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 12px;
+      background: white;
+      padding: 8px 10px;
+    }
+
+    .color-row input[type="color"] {
+      width: 40px;
+      height: 38px;
       border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
     }
 
-    @media (max-width: 1080px) {
-      .editor-grid {
+    .color-row input[type="text"] {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-family: inherit;
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.92rem;
+    }
+
+    .palette-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .swatch-btn {
+      position: relative;
+      height: 46px;
+      border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 12px;
+      cursor: pointer;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fff, #ddd);
+    }
+
+    .swatch-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--swatch-a), var(--swatch-b));
+    }
+
+    .swatch-btn.active {
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.35);
+      border-color: rgba(37,99,235,0.4);
+    }
+
+    .gradient-block {
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 12px;
+      background: white;
+      padding: 10px;
+    }
+
+    .gradient-strip {
+      width: 100%;
+      height: 20px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0f172a, #2563eb, #f8fafc);
+      border: 1px solid rgba(148,163,184,0.18);
+    }
+
+    .quad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .ramp-swatch {
+      height: 32px;
+      border: 1px solid rgba(148,163,184,0.25);
+      border-radius: 10px;
+      cursor: pointer;
+      background: #ccc;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 20px 18px;
+    }
+
+    .secondary-btn {
+      border: 1px solid rgba(148,163,184,0.25);
+      background: #fff;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-btn-modal {
+      border: none;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      color: white;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    @media (max-width: 980px) {
+      .workspace {
         grid-template-columns: 1fr;
       }
 
       .preview-panel {
-        padding-top: 0;
-      }
-    }
-
-    @media (max-width: 720px) {
-      body {
-        padding: 18px 12px 40px;
-      }
-
-      .controls-panel,
-      .preview-panel {
-        padding: 16px;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .preset-row {
-        grid-template-columns: repeat(3, minmax(44px, 1fr));
+        min-height: auto;
       }
 
       #thumbnail-container {
-        transform: scale(0.58);
+        transform: scale(0.7);
+        margin-bottom: -150px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .form-grid,
+      .modal-body,
+      .mini-row,
+      .palette-grid,
+      .quad-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #thumbnail-container {
+        transform: scale(0.56);
         margin-bottom: -200px;
       }
 
-      .content-side {
-        padding: 40px 26px 28px;
+      .controls-panel {
+        padding: 16px;
       }
     }
   </style>
@@ -576,16 +663,14 @@
   <div class="app-shell">
     <div class="topbar">
       <h1>Gerador de Thumbnail</h1>
-      <div class="topbar-badge"><i class="fas fa-palette"></i> Estilo premium</div>
+      <div class="mini-tag"><i class="fas fa-swatchbook"></i> Editor visual</div>
     </div>
 
-    <div class="editor-grid">
+    <div class="workspace">
       <section class="panel controls-panel">
-        <div class="preset-area">
-          <div class="section-header">
-            <div class="section-title">Paleta de cores</div>
-          </div>
-          <div class="preset-row" id="presetRow"></div>
+        <div class="controls-header">
+          <div class="section-title">Configuração</div>
+          <button class="ghost-btn" onclick="openColorModal()"><i class="fas fa-palette"></i> Cores</button>
         </div>
 
         <div class="form-grid">
@@ -595,7 +680,7 @@
           </div>
 
           <div class="input-group wide">
-            <label>Badge / etiqueta</label>
+            <label>Badge/etiqueta</label>
             <input type="text" id="inputBadge" value="Portfólio Profissional" oninput="updateContent()">
           </div>
 
@@ -623,47 +708,15 @@
             <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
           </div>
 
-          <div class="input-group">
-            <label>Fundo escuro</label>
-            <div class="color-control">
-              <input type="color" id="inputBgDark" value="#0F172A" oninput="syncHexInput('bgDark')">
-              <input type="text" id="inputBgDarkHex" value="#0F172A" maxlength="7" oninput="handleHexInput('bgDark', this.value)">
+          <div class="input-group wide">
+            <label>Temas</label>
+            <div class="color-action">
+              <span class="color-preview" id="themePreview"></span>
+              <button type="button" onclick="openColorModal()">Editar cor do tema</button>
             </div>
           </div>
 
-          <div class="input-group">
-            <label>Destaque</label>
-            <div class="color-control">
-              <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="syncHexInput('accentPrimary')">
-              <input type="text" id="inputAccentPrimaryHex" value="#2563EB" maxlength="7" oninput="handleHexInput('accentPrimary', this.value)">
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>Texto</label>
-            <div class="color-control">
-              <input type="color" id="inputTextColor" value="#FFFFFF" oninput="syncHexInput('textColor')">
-              <input type="text" id="inputTextColorHex" value="#FFFFFF" maxlength="7" oninput="handleHexInput('textColor', this.value)">
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>Ícones</label>
-            <div class="color-control">
-              <input type="color" id="inputIconColor" value="#F8FAFC" oninput="syncHexInput('iconColor')">
-              <input type="text" id="inputIconColorHex" value="#F8FAFC" maxlength="7" oninput="handleHexInput('iconColor', this.value)">
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label>Subtítulo</label>
-            <div class="color-control">
-              <input type="color" id="inputSubtitleColor" value="#A5B4CF" oninput="syncHexInput('subtitleColor')">
-              <input type="text" id="inputSubtitleColorHex" value="#A5B4CF" maxlength="7" oninput="handleHexInput('subtitleColor', this.value)">
-            </div>
-          </div>
-
-          <div class="input-group icon-picker">
+          <div class="input-group icon-picker" style="grid-column:1 / -1;">
             <label>Tecnologias (máx. 5)</label>
             <div class="icon-box">
               <div class="icon-checkbox-group" id="iconCheckboxes"></div>
@@ -698,7 +751,7 @@
               <div class="image-blob-container">
                 <div class="blob-bg"></div>
                 <div class="profile-img-frame">
-                  <img id="displayImage" class="profile-img" style="display: none;">
+                  <img id="displayImage" class="profile-img" style="display:none;">
                   <div class="placeholder-text">Carregando...</div>
                 </div>
               </div>
@@ -709,15 +762,101 @@
     </div>
   </div>
 
-  <div id="cropModal" class="modal-overlay">
-    <div class="modal-content">
-      <h2>Ajustar imagem</h2>
-      <div class="cropper-container-box">
-        <img id="imageCropper" alt="Imagem para recorte">
+  <div id="colorModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Cores do tema</h3>
+        <button class="close-modal" onclick="closeColorModal()" aria-label="Fechar">×</button>
       </div>
-      <div class="cropper-buttons">
-        <button id="cropAndApply"><i class="fas fa-check"></i> Aplicar</button>
-        <button onclick="closeCropper()"><i class="fas fa-times"></i> Cancelar</button>
+
+      <div class="modal-body">
+        <div class="picker-box">
+          <div class="picker-section">
+            <div class="mini-row">
+              <div>
+                <label>Fundo</label>
+                <div class="color-row">
+                  <input type="color" id="modalBgDark" value="#0F172A">
+                  <input type="text" id="modalBgDarkHex" value="#0F172A" maxlength="7">
+                </div>
+              </div>
+
+              <div>
+                <label>Destaque</label>
+                <div class="color-row">
+                  <input type="color" id="modalAccentPrimary" value="#2563EB">
+                  <input type="text" id="modalAccentPrimaryHex" value="#2563EB" maxlength="7">
+                </div>
+              </div>
+            </div>
+
+            <div class="mini-row">
+              <div>
+                <label>Texto</label>
+                <div class="color-row">
+                  <input type="color" id="modalTextColor" value="#FFFFFF">
+                  <input type="text" id="modalTextColorHex" value="#FFFFFF" maxlength="7">
+                </div>
+              </div>
+
+              <div>
+                <label>Ícones</label>
+                <div class="color-row">
+                  <input type="color" id="modalIconColor" value="#F8FAFC">
+                  <input type="text" id="modalIconColorHex" value="#F8FAFC" maxlength="7">
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label>Subtítulo</label>
+              <div class="color-row">
+                <input type="color" id="modalSubtitleColor" value="#A5B4CF">
+                <input type="text" id="modalSubtitleColorHex" value="#A5B4CF" maxlength="7">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="palette-box">
+          <div>
+            <label>Paletas rápidas</label>
+            <div class="palette-grid" id="modalPaletteGrid"></div>
+          </div>
+
+          <div>
+            <label>Rampa</label>
+            <div class="gradient-block">
+              <div class="gradient-strip" id="rampStrip"></div>
+              <div class="quad-grid" id="rampSwatches"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" onclick="closeColorModal()">Cancelar</button>
+        <button class="primary-btn-modal" type="button" onclick="applyThemeFromModal()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cropModal" class="modal-overlay" style="background: rgba(15,23,42,0.8);">
+    <div class="modal-card" style="max-width:620px;">
+      <div class="modal-header">
+        <h3>Ajustar imagem</h3>
+        <button class="close-modal" onclick="closeCropper()">×</button>
+      </div>
+      <div class="modal-body" style="display:block; padding-top:14px;">
+        <div class="picker-box" style="padding:0; overflow:hidden;">
+          <div style="max-height:420px; overflow:hidden;">
+            <img id="imageCropper" alt="Imagem para recorte" style="display:block; width:100%; max-width:100%;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="secondary-btn" type="button" onclick="closeCropper()">Cancelar</button>
+        <button class="primary-btn-modal" id="cropAndApply" type="button"><i class="fas fa-check"></i> Aplicar</button>
       </div>
     </div>
   </div>
@@ -726,14 +865,15 @@
     let cropper;
     const root = document.documentElement;
 
-    const presetPalettes = [
+    const colorPresets = [
       { name: 'Aipim', bg: '#0F172A', accent: '#22C55E', text: '#FFFFFF', icon: '#F8FAFC', subtitle: '#B7C5DE' },
       { name: 'Ocean', bg: '#061B2D', accent: '#2DD4BF', text: '#ECFEFF', icon: '#E0F2FE', subtitle: '#A9CDE3' },
       { name: 'Sunset', bg: '#1F2937', accent: '#F97316', text: '#FFF7ED', icon: '#FFF7ED', subtitle: '#F5CC9C' },
       { name: 'Violet', bg: '#111827', accent: '#A78BFA', text: '#F5F3FF', icon: '#F5F3FF', subtitle: '#CCC3F2' },
       { name: 'Rose', bg: '#1F1B2D', accent: '#F472B6', text: '#FDF2F8', icon: '#FDF2F8', subtitle: '#F7D4EC' },
       { name: 'Lime', bg: '#132A13', accent: '#84CC16', text: '#F0FDF4', icon: '#F0FDF4', subtitle: '#CFEFC0' },
-      { name: 'Slate', bg: '#111827', accent: '#60A5FA', text: '#F8FAFC', icon: '#F8FAFC', subtitle: '#B7C4D7' }
+      { name: 'Slate', bg: '#111827', accent: '#60A5FA', text: '#F8FAFC', icon: '#F8FAFC', subtitle: '#B7C4D7' },
+      { name: 'Amber', bg: '#1E293B', accent: '#F59E0B', text: '#FFF7ED', icon: '#FFF7ED', subtitle: '#F7D49A' }
     ];
 
     const allTechIcons = [
@@ -768,26 +908,21 @@
       { name: "C#", class: "fas fa-code" }
     ];
 
+    const appState = {
+      bg: '#0F172A',
+      accent: '#2563EB',
+      text: '#FFFFFF',
+      icon: '#F8FAFC',
+      subtitle: '#A5B4CF'
+    };
+
     function normalizeHex(value, fallback = '#000000') {
       if (!value) return fallback;
       let raw = value.trim();
       if (!raw) return fallback;
-
       if (raw.startsWith('#')) raw = raw.slice(1);
       if (raw.length === 3) raw = raw.split('').map(ch => ch + ch).join('');
       if (/^[0-9a-fA-F]{6}$/.test(raw)) return '#' + raw.toUpperCase();
-
-      if (raw.startsWith('rgb')) {
-        const match = raw.match(/rgba?\(([^)]+)\)/i);
-        if (match) {
-          const channels = match[1].split(',').map(part => Number(part.trim()));
-          if (channels.length >= 3 && channels.every(n => !Number.isNaN(n))) {
-            const [r, g, b] = channels.slice(0, 3).map(n => Math.max(0, Math.min(255, Math.round(n))));
-            return '#' + [r, g, b].map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase();
-          }
-        }
-      }
-
       return fallback;
     }
 
@@ -799,175 +934,189 @@
       return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
 
-    function applyPreset(palette) {
-      document.getElementById('inputBgDark').value = palette.bg;
-      document.getElementById('inputBgDarkHex').value = palette.bg;
-      document.getElementById('inputAccentPrimary').value = palette.accent;
-      document.getElementById('inputAccentPrimaryHex').value = palette.accent;
-      document.getElementById('inputTextColor').value = palette.text;
-      document.getElementById('inputTextColorHex').value = palette.text;
-      document.getElementById('inputIconColor').value = palette.icon;
-      document.getElementById('inputIconColorHex').value = palette.icon;
-      document.getElementById('inputSubtitleColor').value = palette.subtitle;
-      document.getElementById('inputSubtitleColorHex').value = palette.subtitle;
-      updateColors();
-      document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-      const active = [...document.querySelectorAll('.preset-btn')].find(btn => btn.dataset.name === palette.name);
-      if (active) active.classList.add('active');
+    function updateThemePreview() {
+      document.getElementById('themePreview').style.background = `linear-gradient(135deg, ${appState.accent}, ${appState.bg})`;
     }
 
     function renderPresets() {
-      const row = document.getElementById('presetRow');
-      row.innerHTML = '';
-
-      presetPalettes.forEach(palette => {
+      const grid = document.getElementById('modalPaletteGrid');
+      grid.innerHTML = '';
+      colorPresets.forEach((preset) => {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'preset-btn';
-        btn.title = palette.name;
-        btn.dataset.name = palette.name;
-        btn.style.setProperty('--preset-a', palette.accent);
-        btn.style.setProperty('--preset-b', palette.icon);
-        btn.innerHTML = '<span style="position:relative;z-index:1;display:block;width:100%;height:100%;"></span>';
-        btn.addEventListener('click', () => applyPreset(palette));
-        row.appendChild(btn);
+        btn.className = 'swatch-btn';
+        btn.title = preset.name;
+        btn.style.setProperty('--swatch-a', preset.accent);
+        btn.style.setProperty('--swatch-b', preset.bg);
+        btn.addEventListener('click', () => {
+          appState.bg = preset.bg;
+          appState.accent = preset.accent;
+          appState.text = preset.text;
+          appState.icon = preset.icon;
+          appState.subtitle = preset.subtitle;
+          syncMainInputs();
+          syncModalInputs();
+          updateColors();
+          document.querySelectorAll('.swatch-btn').forEach(el => el.classList.remove('active'));
+          btn.classList.add('active');
+        });
+        grid.appendChild(btn);
       });
-
-      const first = document.querySelector('.preset-btn');
-      if (first) first.classList.add('active');
     }
 
-    function syncHexInput(type) {
-      const mapping = {
-        bgDark: ['inputBgDark', 'inputBgDarkHex'],
-        accentPrimary: ['inputAccentPrimary', 'inputAccentPrimaryHex'],
-        textColor: ['inputTextColor', 'inputTextColorHex'],
-        iconColor: ['inputIconColor', 'inputIconColorHex'],
-        subtitleColor: ['inputSubtitleColor', 'inputSubtitleColorHex']
-      };
+    function renderRampSwatches() {
+      const swatches = document.getElementById('rampSwatches');
+      const ramp = [
+        '#0F172A', '#1E293B', '#2563EB', '#22C55E', '#F59E0B', '#A78BFA', '#F472B6', '#F8FAFC'
+      ];
+      swatches.innerHTML = '';
+      ramp.forEach(color => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'ramp-swatch';
+        dot.style.background = color;
+        dot.title = color;
+        dot.addEventListener('click', () => {
+          appState.accent = color;
+          syncMainInputs();
+          syncModalInputs();
+          updateColors();
+        });
+        swatches.appendChild(dot);
+      });
+    }
 
-      const keys = mapping[type];
-      if (!keys) return;
+    function syncMainInputs() {
+      document.getElementById('inputBgDark').value = appState.bg;
+      document.getElementById('inputAccentPrimary').value = appState.accent;
+      document.getElementById('inputTextColor').value = appState.text;
+      document.getElementById('inputIconColor').value = appState.icon;
+      document.getElementById('inputSubtitleColor').value = appState.subtitle;
+    }
 
-      const picker = document.getElementById(keys[0]);
-      const text = document.getElementById(keys[1]);
-      const value = normalizeHex(picker.value, text.value || '#000000');
-      picker.value = value;
-      text.value = value;
+    function syncModalInputs() {
+      document.getElementById('modalBgDark').value = appState.bg;
+      document.getElementById('modalAccentPrimary').value = appState.accent;
+      document.getElementById('modalTextColor').value = appState.text;
+      document.getElementById('modalIconColor').value = appState.icon;
+      document.getElementById('modalSubtitleColor').value = appState.subtitle;
+
+      document.getElementById('modalBgDarkHex').value = appState.bg;
+      document.getElementById('modalAccentPrimaryHex').value = appState.accent;
+      document.getElementById('modalTextColorHex').value = appState.text;
+      document.getElementById('modalIconColorHex').value = appState.icon;
+      document.getElementById('modalSubtitleColorHex').value = appState.subtitle;
+    }
+
+    function readModalColors() {
+      appState.bg = normalizeHex(document.getElementById('modalBgDark').value, appState.bg);
+      appState.accent = normalizeHex(document.getElementById('modalAccentPrimary').value, appState.accent);
+      appState.text = normalizeHex(document.getElementById('modalTextColor').value, appState.text);
+      appState.icon = normalizeHex(document.getElementById('modalIconColor').value, appState.icon);
+      appState.subtitle = normalizeHex(document.getElementById('modalSubtitleColor').value, appState.subtitle);
+      syncMainInputs();
+      syncModalInputs();
       updateColors();
     }
 
-    function handleHexInput(type, rawValue) {
-      const mapping = {
-        bgDark: ['inputBgDark', 'inputBgDarkHex'],
-        accentPrimary: ['inputAccentPrimary', 'inputAccentPrimaryHex'],
-        textColor: ['inputTextColor', 'inputTextColorHex'],
-        iconColor: ['inputIconColor', 'inputIconColorHex'],
-        subtitleColor: ['inputSubtitleColor', 'inputSubtitleColorHex']
-      };
+    function openColorModal() {
+      syncModalInputs();
+      document.getElementById('colorModal').style.display = 'flex';
+    }
 
-      const keys = mapping[type];
-      if (!keys) return;
+    function closeColorModal() {
+      document.getElementById('colorModal').style.display = 'none';
+    }
 
-      const value = normalizeHex(rawValue, document.getElementById(keys[0]).value || '#000000');
-      document.getElementById(keys[0]).value = value;
-      document.getElementById(keys[1]).value = value;
-      updateColors();
+    function applyThemeFromModal() {
+      readModalColors();
+      closeColorModal();
     }
 
     function updateColors() {
-      const darkHex = normalizeHex(document.getElementById('inputBgDark').value, '#0F172A');
-      const accentHex = normalizeHex(document.getElementById('inputAccentPrimary').value, '#2563EB');
-      const textHex = normalizeHex(document.getElementById('inputTextColor').value, '#FFFFFF');
-      const iconHex = normalizeHex(document.getElementById('inputIconColor').value, '#F8FAFC');
-      const subtitleHex = normalizeHex(document.getElementById('inputSubtitleColor').value, '#A5B4CF');
+      const darkHex = normalizeHex(appState.bg, '#0F172A');
+      const accentHex = normalizeHex(appState.accent, '#2563EB');
+      const textHex = normalizeHex(appState.text, '#FFFFFF');
+      const iconHex = normalizeHex(appState.icon, '#F8FAFC');
+      const subtitleHex = normalizeHex(appState.subtitle, '#A5B4CF');
 
       root.style.setProperty('--bg-dark', darkHex);
       root.style.setProperty('--accent-primary', accentHex);
-      root.style.setProperty('--text-color', textHex);
-      root.style.setProperty('--icon-color', iconHex);
-      root.style.setProperty('--subtitle-color', subtitleHex);
-      root.style.setProperty('--tag-text-color', textHex);
-      root.style.setProperty('--accent-secondary', hexToRgba(accentHex, 0.85).replace(/rgba\(([^)]+)\)/, (_, rgb) => {
+      root.style.setProperty('--accent-secondary', hexToRgba(accentHex, 0.88).replace(/rgba\(([^)]+)\)/, (_, rgb) => {
         const [r, g, b] = rgb.split(',').map(Number);
         return `rgb(${Math.max(0, r - 18)}, ${Math.max(0, g - 18)}, ${Math.max(0, b - 18)})`;
       }));
+      root.style.setProperty('--text-color', textHex);
+      root.style.setProperty('--icon-color', iconHex);
+      root.style.setProperty('--subtitle-color', subtitleHex);
       root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.18));
       root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.38));
       root.style.setProperty('--bg-dark-transparent', hexToRgba(darkHex, 0));
 
-      document.getElementById('inputBgDark').value = darkHex;
-      document.getElementById('inputBgDarkHex').value = darkHex;
-      document.getElementById('inputAccentPrimary').value = accentHex;
-      document.getElementById('inputAccentPrimaryHex').value = accentHex;
-      document.getElementById('inputTextColor').value = textHex;
-      document.getElementById('inputTextColorHex').value = textHex;
-      document.getElementById('inputIconColor').value = iconHex;
-      document.getElementById('inputIconColorHex').value = iconHex;
-      document.getElementById('inputSubtitleColor').value = subtitleHex;
-      document.getElementById('inputSubtitleColorHex').value = subtitleHex;
+      document.getElementById('themePreview').style.background = `linear-gradient(135deg, ${accentHex}, ${darkHex})`;
+      appState.bg = darkHex;
+      appState.accent = accentHex;
+      appState.text = textHex;
+      appState.icon = iconHex;
+      appState.subtitle = subtitleHex;
+      syncMainInputs();
+      syncModalInputs();
     }
 
     function updateFont() {
-      const selectedFont = document.getElementById('fontSelect').value;
-      root.style.setProperty('--font-body', selectedFont);
-      root.style.setProperty('--font-heading', selectedFont);
-      document.body.style.fontFamily = selectedFont;
+      const selected = document.getElementById('fontSelect').value;
+      root.style.setProperty('--font-body', selected);
+      root.style.setProperty('--font-heading', selected);
+      document.body.style.fontFamily = selected;
     }
 
     function renderIconCheckboxes() {
       const container = document.getElementById('iconCheckboxes');
       container.innerHTML = '';
-
       allTechIcons.forEach(icon => {
-        const id = `icon-${icon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-        const isChecked = ['Python', 'Database', 'Mapa/GIS', 'JavaScript', 'Análise', 'Cloud'].includes(icon.name);
+        const id = `tech-${icon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+        const checked = ['Python', 'JavaScript', 'Database', 'Mapa/GIS', 'Análise', 'Cloud'].includes(icon.name);
 
         const label = document.createElement('label');
         label.setAttribute('for', id);
 
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = id;
-        checkbox.value = icon.class;
-        checkbox.checked = isChecked;
-        checkbox.onchange = updateTechStack;
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.id = id;
+        input.value = icon.class;
+        input.checked = checked;
+        input.onchange = updateTechStack;
 
-        const iconSpan = document.createElement('i');
-        iconSpan.className = icon.class;
+        const iconEl = document.createElement('i');
+        iconEl.className = icon.class;
 
-        const textNode = document.createTextNode(icon.name);
-
-        label.appendChild(checkbox);
-        label.appendChild(iconSpan);
-        label.appendChild(textNode);
+        const text = document.createTextNode(icon.name);
+        label.appendChild(input);
+        label.appendChild(iconEl);
+        label.appendChild(text);
         container.appendChild(label);
       });
-
       updateTechStack();
     }
 
     function updateTechStack() {
-      const selectedCheckboxes = Array.from(document.querySelectorAll('#iconCheckboxes input[type="checkbox"]:checked'));
-      const displayContainer = document.getElementById('displayTechStack');
-      displayContainer.innerHTML = '';
-
-      const iconsToDisplay = selectedCheckboxes.slice(0, 5);
-      iconsToDisplay.forEach(checkbox => {
-        const iconElement = document.createElement('i');
-        iconElement.className = `${checkbox.value} tech-icon`;
-        displayContainer.appendChild(iconElement);
+      const selected = [...document.querySelectorAll('#iconCheckboxes input:checked')];
+      const display = document.getElementById('displayTechStack');
+      display.innerHTML = '';
+      const selectedIcons = selected.slice(0, 5);
+      selectedIcons.forEach(cb => {
+        const icon = document.createElement('i');
+        icon.className = `${cb.value} tech-icon`;
+        display.appendChild(icon);
       });
 
-      const checkboxes = document.querySelectorAll('#iconCheckboxes input[type="checkbox"]');
-      if (selectedCheckboxes.length >= 5) {
-        checkboxes.forEach(cb => {
+      const boxes = document.querySelectorAll('#iconCheckboxes input');
+      if (selected.length >= 5) {
+        boxes.forEach(cb => {
           if (!cb.checked) cb.disabled = true;
         });
       } else {
-        checkboxes.forEach(cb => {
-          cb.disabled = false;
-        });
+        boxes.forEach(cb => cb.disabled = false);
       }
     }
 
@@ -975,8 +1124,7 @@
       document.getElementById('displayTitle').innerText = document.getElementById('inputTitle').value;
       document.getElementById('displaySubtitle').innerText = document.getElementById('inputSubtitle').value;
       const badge = document.getElementById('displayBadge');
-      const badgeText = document.getElementById('inputBadge').value || 'Portfólio Profissional';
-      badge.innerHTML = `<i class="fas fa-code"></i><span>${badgeText}</span>`;
+      badge.innerHTML = `<i class="fas fa-code"></i><span>${document.getElementById('inputBadge').value || 'Portfólio Profissional'}</span>`;
     }
 
     const fileToBase64 = (file) => new Promise((resolve, reject) => {
@@ -991,9 +1139,7 @@
       const image = document.getElementById('imageCropper');
       image.src = imageUrl;
       modal.style.display = 'flex';
-
       if (cropper) cropper.destroy();
-
       cropper = new Cropper(image, {
         aspectRatio: 1,
         viewMode: 1,
@@ -1014,8 +1160,8 @@
 
     document.getElementById('cropAndApply').addEventListener('click', () => {
       if (!cropper) return;
-      const croppedCanvas = cropper.getCroppedCanvas({ width: 420, height: 420 });
-      const base64 = croppedCanvas.toDataURL('image/jpeg');
+      const canvas = cropper.getCroppedCanvas({ width: 420, height: 420 });
+      const base64 = canvas.toDataURL('image/jpeg');
       const output = document.getElementById('displayImage');
       output.src = base64;
       output.style.display = 'block';
@@ -1029,8 +1175,8 @@
       try {
         const base64 = await fileToBase64(file);
         openCropper(base64);
-      } catch (e) {
-        console.error('Erro ao ler arquivo', e);
+      } catch (err) {
+        console.error('Erro ao ler arquivo', err);
       }
     }
 
@@ -1061,13 +1207,13 @@
           const modal = document.createElement('div');
           modal.style.cssText = `
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 20px; border-radius: 12px; box-shadow: 0 16px 30px rgba(15,23,42,0.2);
-            z-index: 2001; text-align: center; font-family: 'Inter', sans-serif; color: #0f172a;
+            background: white; padding: 20px; border-radius: 12px; box-shadow: 0 18px 36px rgba(15,23,42,0.18);
+            z-index: 2001; text-align: center; font-family: 'Inter', sans-serif;
           `;
           modal.innerHTML = `
-            <p style="font-weight: 800; color: #ef4444;">Erro na captura</p>
-            <p style="margin-top: 10px;">Verifique o console (F12) e tente novamente.</p>
-            <button onclick="this.parentNode.remove()" style="margin-top: 18px; background:#ef4444; color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer;">Fechar</button>
+            <p style="font-weight:800; color:#ef4444;">Erro na captura</p>
+            <p style="margin-top:10px; color:#0f172a;">Verifique o console e tente novamente.</p>
+            <button onclick="this.parentNode.remove()" style="margin-top:18px; background:#ef4444; color:white; border:none; border-radius:10px; padding:10px 16px; font-weight:700; cursor:pointer;">Fechar</button>
           `;
           document.body.appendChild(modal);
 
@@ -1077,9 +1223,38 @@
       }, 80);
     }
 
+    function initModalColorBindings() {
+      const modalFields = [
+        ['modalBgDark', 'modalBgDarkHex'],
+        ['modalAccentPrimary', 'modalAccentPrimaryHex'],
+        ['modalTextColor', 'modalTextColorHex'],
+        ['modalIconColor', 'modalIconColorHex'],
+        ['modalSubtitleColor', 'modalSubtitleColorHex']
+      ];
+
+      modalFields.forEach(([pickerId, textId]) => {
+        const picker = document.getElementById(pickerId);
+        const text = document.getElementById(textId);
+        picker.addEventListener('input', () => {
+          const value = normalizeHex(picker.value, text.value || '#000000');
+          picker.value = value;
+          text.value = value;
+          readModalColors();
+        });
+        text.addEventListener('input', () => {
+          const value = normalizeHex(text.value, picker.value || '#000000');
+          picker.value = value;
+          text.value = value;
+          readModalColors();
+        });
+      });
+    }
+
     window.onload = async () => {
       renderPresets();
+      renderRampSwatches();
       renderIconCheckboxes();
+      initModalColorBindings();
       updateContent();
       updateColors();
       updateFont();
