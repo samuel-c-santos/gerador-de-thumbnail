@@ -1,64 +1,100 @@
-# Gerador de Thumbnail Personalizável
+# Gerador de Thumbnail
+
+Aplicação web para montar cards de 1200 x 630 px, formato usado em capas de LinkedIn, imagens Open Graph e apresentações. A edição acontece no navegador e a exportação gera um PNG nas dimensões exatas.
 
 [![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub%20Pages-blue?logo=github)](https://samuel-c-santos.github.io/gerador-de-thumbnail/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-Gerador de cards **1200 × 630** (LinkedIn, Open Graph, capas em geral) com visual **neobrutalist**:
-bordas grossas, sombras duras e cores berrantes na medida.
+Ferramenta publicada em https://samuel-c-santos.github.io/gerador-de-thumbnail/
 
-🔗 **Acesse a ferramenta online:** https://samuel-c-santos.github.io/gerador-de-thumbnail/
+## Como funciona
 
-## Funcionalidades
+O card é um elemento de tamanho fixo (1200 x 630 px). Na prévia ele é reduzido com `transform: scale()` para caber na coluna, mas o layout interno permanece em 1200 x 630. A exportação usa o elemento em tamanho real com html2canvas, então o PNG não depende do tamanho da janela nem do zoom do navegador.
 
-* **Prévia fiel, sem compressão:** o card é renderizado em 1200 × 630 de verdade e só sofre *scale* para caber na tela — a proporção nunca deforma.
-* **Texto em tempo real:** título, etiqueta (badge) e subtítulo, com ajuste automático do tamanho da fonte para nunca estourar o card.
-* **Temas neobrutalist:** 8 paletas prontas, edição de cada cor em hexadecimal, paletas rápidas e rampa de destaque. O contraste do card (texto, bordas e ícones) é calculado automaticamente.
-* **Fonte do card:** 9 opções (Archivo, Space Grotesk, Inter, Manrope, Poppins, Montserrat, Source Sans 3, Merriweather e JetBrains Mono).
-* **Foto de perfil:** upload com recorte quadrado (1:1) via `Cropper.js`.
-* **Tecnologias:** mais de 80 opções (dados, bancos, geo, web, cloud e design) com busca e agrupamento por categoria — até 5 no card. Quem não tem ícone no FontAwesome entra com monograma (ex.: `DDB`, `PG`, `QG`).
-* **Download PNG:** exportação exata em 1200 × 630, com nome de arquivo gerado a partir do título.
-* **Privacidade:** todo o processamento acontece no navegador — nada é enviado para servidor.
+## Recursos
 
-## Exemplos gerados
+**Texto**
 
-Imagens geradas na versão anterior do card (o visual atual é neobrutalist):
+- Título, etiqueta e subtítulo editáveis.
+- Redução automática do tamanho da fonte quando o texto passa do espaço disponível.
+- Etiqueta vazia esconde o elemento.
 
-| Perfil Dev (Samuel) | Variação de Cor | Perfil Profissional (Elen) |
+**Cores**
+
+- Fundo, destaque, texto, subtítulo e ícones, por seletor de cor ou hexadecimal.
+- Oito paletas prontas e uma rampa de cores de destaque.
+- Bordas, sombras e a cor do texto da etiqueta são calculados a partir do contraste das cores escolhidas.
+
+**Fontes**
+
+- Nove opções: Archivo, Space Grotesk, Inter, Manrope, Poppins, Montserrat, Source Sans 3, Merriweather e JetBrains Mono.
+
+**Foto**
+
+- Upload de imagem com recorte quadrado, usando Cropper.js.
+
+**Tecnologias**
+
+- 85 itens em seis grupos: dados, bancos, geo, web, cloud e design.
+- Busca por nome ou grupo, ignorando acentos.
+- Até cinco ícones no card.
+- Ferramentas sem ícone no FontAwesome são exibidas com monograma (DDB, QG, PG).
+
+**Exportação**
+
+- PNG em 1200 x 630.
+- Nome do arquivo gerado a partir do título.
+
+**Privacidade**
+
+- O processamento é local. Nenhum arquivo ou dado é enviado para servidor.
+
+## Limitações
+
+- O layout do card é fixo: texto à esquerda, foto à direita, sem posicionamento livre dos elementos.
+- Tema, textos e tecnologias ficam apenas na memória da página. Recarregar a página volta aos valores padrão.
+
+## Exemplos
+
+| Samuel Santos, tema laranja | Samuel Santos, tema verde | Elen Camila, tema rosa |
 |:---:|:---:|:---:|
-| ![Exemplo Samuel](samuel-santos-thumbnail.png) | ![Exemplo Samuel 2](samuel-santos-thumbnail-2.png) | ![Exemplo Elen](elen-camila-thumbnail.png) |
+| ![Samuel Santos, tema laranja](samuel-santos-thumbnail.png) | ![Samuel Santos, tema verde](samuel-santos-thumbnail-2.png) | ![Elen Camila, tema rosa](elen-camila-thumbnail.png) |
 
-## Tecnologias utilizadas
+## Uso local
 
-* **HTML5 & CSS3** (variáveis CSS para os temas dinâmicos)
-* **JavaScript (ES6+)**
-* **[html2canvas](https://html2canvas.hertzen.com/)**: renderiza o DOM como imagem para o PNG final
-* **[Cropper.js](https://github.com/fengyuanchen/cropperjs)**: recorte da foto de perfil
-* **FontAwesome**: biblioteca de ícones
+```bash
+git clone https://github.com/samuel-c-santos/gerador-de-thumbnail.git
+cd gerador-de-thumbnail
+```
 
-## Como usar localmente
+Abra o `index.html` no navegador ou sirva a pasta:
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/samuel-c-santos/gerador-de-thumbnail.git
-   ```
-2. Entre na pasta:
-   ```bash
-   cd gerador-de-thumbnail
-   ```
-3. Abra o `index.html` no navegador (ou sirva a pasta com `npx serve .`).
+```bash
+npx serve .
+```
 
-Não há build, dependências para instalar nem backend: é um único arquivo HTML.
+Não existe etapa de build nem dependência para instalar.
 
 ## Estrutura
 
 ```
-index.html                      # aplicação completa (UI + card + exportação)
-LICENSE                         # MIT
+index.html                       aplicação completa (interface, card e exportação)
+samuel-santos-thumbnail.png      exemplo
+samuel-santos-thumbnail-2.png    exemplo
+elen-camila-thumbnail.png        exemplo
+LICENSE                          licença MIT
 README.md
-samuel-santos-thumbnail(-2).png # exemplos (versão anterior)
-elen-camila-thumbnail.png       # exemplo (versão anterior)
 ```
+
+## Dependências
+
+Bibliotecas carregadas por CDN, sem gerenciador de pacotes:
+
+- html2canvas 1.4.1
+- Cropper.js 1.6.1
+- Font Awesome 6.4
+- Google Fonts
 
 ## Licença
 
-Distribuído sob a licença MIT. Veja [LICENSE](LICENSE).
+MIT. Consulte [LICENSE](LICENSE).
