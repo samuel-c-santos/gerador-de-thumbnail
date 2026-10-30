@@ -62,24 +62,9 @@
       color: #0f172a;
     }
 
-    .mini-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.04);
-      border: 1px solid rgba(15,23,42,0.08);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #475569;
-    }
-
     .workspace {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
       gap: 22px;
       align-items: start;
     }
@@ -265,15 +250,15 @@
       align-items: center;
       justify-content: center;
       padding: 18px;
-      min-height: 640px;
       background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(248,250,252,0.7));
+      min-height: 640px;
     }
 
     .preview-shell {
       width: 100%;
       display: flex;
       justify-content: center;
-      padding-top: 6px;
+      padding-top: 4px;
     }
 
     #thumbnail-container {
@@ -286,8 +271,8 @@
       box-shadow: 0 20px 38px rgba(15, 23, 42, 0.18);
       border-radius: 18px;
       transform-origin: center top;
-      transform: scale(0.88);
-      margin-bottom: -120px;
+      transform: none;
+      margin-bottom: 0;
       border: 1px solid rgba(148,163,184,0.15);
     }
 
@@ -634,8 +619,7 @@
       }
 
       #thumbnail-container {
-        transform: scale(0.7);
-        margin-bottom: -150px;
+        max-width: 100%;
       }
     }
 
@@ -649,8 +633,7 @@
       }
 
       #thumbnail-container {
-        transform: scale(0.56);
-        margin-bottom: -200px;
+        height: 420px;
       }
 
       .controls-panel {
@@ -663,7 +646,6 @@
   <div class="app-shell">
     <div class="topbar">
       <h1>Gerador de Thumbnail</h1>
-      <div class="mini-tag"><i class="fas fa-swatchbook"></i> Editor visual</div>
     </div>
 
     <div class="workspace">
