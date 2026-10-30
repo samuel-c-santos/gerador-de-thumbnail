@@ -15,7 +15,7 @@ bordas grossas, sombras duras e cores berrantes na medida.
 * **Temas neobrutalist:** 8 paletas prontas, edição de cada cor em hexadecimal, paletas rápidas e rampa de destaque. O contraste do card (texto, bordas e ícones) é calculado automaticamente.
 * **Fonte do card:** 9 opções (Archivo, Space Grotesk, Inter, Manrope, Poppins, Montserrat, Source Sans 3, Merriweather e JetBrains Mono).
 * **Foto de perfil:** upload com recorte quadrado (1:1) via `Cropper.js`.
-* **Tecnologias:** 29 ícones FontAwesome, até 5 no card.
+* **Tecnologias:** mais de 80 opções (dados, bancos, geo, web, cloud e design) com busca e agrupamento por categoria — até 5 no card. Quem não tem ícone no FontAwesome entra com monograma (ex.: `DDB`, `PG`, `QG`).
 * **Download PNG:** exportação exata em 1200 × 630, com nome de arquivo gerado a partir do título.
 * **Privacidade:** todo o processamento acontece no navegador — nada é enviado para servidor.
 

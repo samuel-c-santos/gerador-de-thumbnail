@@ -390,7 +390,50 @@
       box-shadow: 2px 2px 0 var(--ink);
     }
 
+    .tech-search { margin-bottom: 10px; padding: 8px 10px; font-size: 0.8rem; }
+
+    .tech-list {
+      max-height: 286px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 6px;
+    }
+
+    .tech-list::-webkit-scrollbar { width: 11px; }
+    .tech-list::-webkit-scrollbar-track { background: #fff; border-left: 2px solid var(--ink); }
+
+    .tech-list::-webkit-scrollbar-thumb {
+      background: var(--pink);
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+    }
+
+    .tech-group + .tech-group { margin-top: 12px; }
+
+    .tech-group-title {
+      margin-bottom: 6px;
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .tech-empty {
+      padding: 8px 2px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: #777;
+    }
+
     .tech-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .tech-glyph {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
 
     .tech-chip {
       display: inline-flex;
@@ -702,6 +745,17 @@
     }
 
     .tn-chip i { font-size: 26px; color: var(--tn-icon); }
+
+    .tn-glyph {
+      font-family: var(--tn-mono);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--tn-icon);
+    }
+
+    .tn-glyph.is-long { font-size: 16px; }
 
     .tn-photo-side {
       position: relative;
@@ -1148,7 +1202,10 @@
             <div class="block-title"><span class="num">04</span> Tecnologias</div>
             <span class="counter" id="techCounter">0/5</span>
           </div>
-          <div class="tech-grid" id="techGrid"></div>
+
+          <input class="input tech-search" id="techSearch" type="text" placeholder="filtrar: duckdb, geo, python…" autocomplete="off" oninput="renderTechChips()" aria-label="Filtrar tecnologias">
+
+          <div class="tech-list" id="techGrid"></div>
         </div>
 
         <div class="download-block">
@@ -1362,36 +1419,105 @@
     const rampColors = ['#FF90E8', '#FFC900', '#90A8ED', '#23A094', '#FF7A3C', '#C4A1FF', '#000000', '#FFFFFF'];
 
     const allTechIcons = [
-      { name: 'Python', class: 'fab fa-python' },
-      { name: 'JavaScript', class: 'fab fa-js' },
-      { name: 'TypeScript', class: 'fas fa-code' },
-      { name: 'HTML5', class: 'fab fa-html5' },
-      { name: 'CSS3', class: 'fab fa-css3-alt' },
-      { name: 'React', class: 'fab fa-react' },
-      { name: 'Vue', class: 'fab fa-vuejs' },
-      { name: 'Angular', class: 'fab fa-angular' },
-      { name: 'Node.js', class: 'fab fa-node-js' },
-      { name: 'Next.js', class: 'fas fa-rocket' },
-      { name: 'Tailwind', class: 'fas fa-wind' },
-      { name: 'Git', class: 'fab fa-git-alt' },
-      { name: 'Docker', class: 'fab fa-docker' },
-      { name: 'Figma', class: 'fab fa-figma' },
-      { name: 'Database', class: 'fas fa-database' },
-      { name: 'PostgreSQL', class: 'fas fa-server' },
-      { name: 'MongoDB', class: 'fas fa-database' },
-      { name: 'Redis', class: 'fas fa-memory' },
-      { name: 'Cloud', class: 'fas fa-cloud' },
-      { name: 'AWS', class: 'fab fa-aws' },
-      { name: 'Mapa/GIS', class: 'fas fa-map-marked-alt' },
-      { name: 'Análise', class: 'fas fa-chart-pie' },
-      { name: 'IA', class: 'fas fa-brain' },
-      { name: 'Design', class: 'fas fa-paint-brush' },
-      { name: 'PHP', class: 'fab fa-php' },
-      { name: 'Laravel', class: 'fab fa-laravel' },
-      { name: 'Go', class: 'fas fa-code' },
-      { name: 'Java', class: 'fab fa-java' },
-      { name: 'C#', class: 'fas fa-code' }
+      // Dados & BI
+      { name: 'Python', class: 'fab fa-python', group: 'Dados' },
+      { name: 'DuckDB', glyph: 'DDB', group: 'Dados' },
+      { name: 'SQL', glyph: 'SQL', group: 'Dados' },
+      { name: 'pandas', glyph: 'pd', group: 'Dados' },
+      { name: 'NumPy', glyph: 'np', group: 'Dados' },
+      { name: 'Jupyter', glyph: 'JUP', group: 'Dados' },
+      { name: 'scikit-learn', glyph: 'skl', group: 'Dados' },
+      { name: 'Spark', glyph: 'SPK', group: 'Dados' },
+      { name: 'Airflow', glyph: 'AF', group: 'Dados' },
+      { name: 'dbt', glyph: 'dbt', group: 'Dados' },
+      { name: 'TensorFlow', glyph: 'TF', group: 'Dados' },
+      { name: 'PyTorch', glyph: 'PT', group: 'Dados' },
+      { name: 'Streamlit', glyph: 'ST', group: 'Dados' },
+      { name: 'IA', class: 'fas fa-brain', group: 'Dados' },
+      { name: 'Análise', class: 'fas fa-chart-pie', group: 'Dados' },
+      { name: 'Power BI', glyph: 'PBI', group: 'Dados' },
+      { name: 'Tableau', glyph: 'TBL', group: 'Dados' },
+      { name: 'Excel', class: 'fas fa-file-excel', group: 'Dados' },
+      { name: 'Estatística', class: 'fas fa-chart-line', group: 'Dados' },
+
+      // Bancos
+      { name: 'PostgreSQL', class: 'fas fa-server', group: 'Bancos' },
+      { name: 'PostGIS', glyph: 'PG', group: 'Bancos' },
+      { name: 'MySQL', glyph: 'MY', group: 'Bancos' },
+      { name: 'SQLite', glyph: 'SQ', group: 'Bancos' },
+      { name: 'MongoDB', class: 'fas fa-database', group: 'Bancos' },
+      { name: 'Redis', class: 'fas fa-memory', group: 'Bancos' },
+      { name: 'BigQuery', glyph: 'BQ', group: 'Bancos' },
+      { name: 'Snowflake', class: 'fas fa-snowflake', group: 'Bancos' },
+      { name: 'Supabase', class: 'fas fa-bolt', group: 'Bancos' },
+      { name: 'Kafka', glyph: 'KFK', group: 'Bancos' },
+      { name: 'Database', class: 'fas fa-database', group: 'Bancos' },
+
+      // Geo
+      { name: 'Mapa/GIS', class: 'fas fa-map-marked-alt', group: 'Geo' },
+      { name: 'QGIS', glyph: 'QG', group: 'Geo' },
+      { name: 'GDAL', glyph: 'GD', group: 'Geo' },
+      { name: 'GeoPandas', glyph: 'GP', group: 'Geo' },
+      { name: 'Leaflet', glyph: 'LF', group: 'Geo' },
+      { name: 'Mapbox', glyph: 'MB', group: 'Geo' },
+      { name: 'OpenStreetMap', glyph: 'OSM', group: 'Geo' },
+      { name: 'Kepler.gl', glyph: 'KP', group: 'Geo' },
+      { name: 'Satélite', class: 'fas fa-satellite', group: 'Geo' },
+      { name: 'GPS', class: 'fas fa-map-pin', group: 'Geo' },
+      { name: 'Terra', class: 'fas fa-globe', group: 'Geo' },
+
+      // Web
+      { name: 'JavaScript', class: 'fab fa-js', group: 'Web' },
+      { name: 'TypeScript', class: 'fas fa-code', group: 'Web' },
+      { name: 'HTML5', class: 'fab fa-html5', group: 'Web' },
+      { name: 'CSS3', class: 'fab fa-css3-alt', group: 'Web' },
+      { name: 'React', class: 'fab fa-react', group: 'Web' },
+      { name: 'Vue', class: 'fab fa-vuejs', group: 'Web' },
+      { name: 'Angular', class: 'fab fa-angular', group: 'Web' },
+      { name: 'Next.js', class: 'fas fa-rocket', group: 'Web' },
+      { name: 'Node.js', class: 'fab fa-node-js', group: 'Web' },
+      { name: 'Tailwind', class: 'fas fa-wind', group: 'Web' },
+      { name: 'Svelte', class: 'fas fa-fire', group: 'Web' },
+      { name: 'Astro', glyph: 'AS', group: 'Web' },
+      { name: 'FastAPI', glyph: 'FA', group: 'Web' },
+      { name: 'Django', glyph: 'DJ', group: 'Web' },
+      { name: 'Flask', glyph: 'FL', group: 'Web' },
+      { name: 'GraphQL', glyph: 'GQL', group: 'Web' },
+      { name: 'PHP', class: 'fab fa-php', group: 'Web' },
+      { name: 'Laravel', class: 'fab fa-laravel', group: 'Web' },
+      { name: 'Go', glyph: 'GO', group: 'Web' },
+      { name: 'Java', class: 'fab fa-java', group: 'Web' },
+      { name: 'C#', glyph: 'C#', group: 'Web' },
+      { name: 'C++', glyph: 'C++', group: 'Web' },
+      { name: 'Rust', glyph: 'RS', group: 'Web' },
+      { name: 'Git', class: 'fab fa-git-alt', group: 'Web' },
+      { name: 'GitHub', class: 'fab fa-github', group: 'Web' },
+
+      // Cloud & DevOps
+      { name: 'Docker', class: 'fab fa-docker', group: 'Cloud' },
+      { name: 'Kubernetes', class: 'fas fa-dharmachakra', group: 'Cloud' },
+      { name: 'Terraform', glyph: 'TFR', group: 'Cloud' },
+      { name: 'AWS', class: 'fab fa-aws', group: 'Cloud' },
+      { name: 'Azure', class: 'fab fa-microsoft', group: 'Cloud' },
+      { name: 'GCP', glyph: 'GCP', group: 'Cloud' },
+      { name: 'Cloud', class: 'fas fa-cloud', group: 'Cloud' },
+      { name: 'Linux', class: 'fab fa-linux', group: 'Cloud' },
+      { name: 'Ubuntu', class: 'fab fa-ubuntu', group: 'Cloud' },
+      { name: 'Nginx', glyph: 'NGX', group: 'Cloud' },
+      { name: 'Vercel', glyph: 'VCL', group: 'Cloud' },
+      { name: 'Actions', glyph: 'GHA', group: 'Cloud' },
+
+      // Design & Produto
+      { name: 'Figma', class: 'fab fa-figma', group: 'Design' },
+      { name: 'Design', class: 'fas fa-paint-brush', group: 'Design' },
+      { name: 'Photoshop', glyph: 'PS', group: 'Design' },
+      { name: 'Canva', glyph: 'CV', group: 'Design' },
+      { name: 'Notion', glyph: 'NT', group: 'Design' },
+      { name: 'Trello', class: 'fab fa-trello', group: 'Design' },
+      { name: 'Slack', class: 'fab fa-slack', group: 'Design' }
     ];
+
+    const techGroups = ['Dados', 'Bancos', 'Geo', 'Web', 'Cloud', 'Design'];
 
     const MAX_TECH = 5;
     const selectedTech = new Set(['Python', 'JavaScript', 'Database', 'Mapa/GIS', 'Análise']);
@@ -1538,37 +1664,83 @@
     /* ============================================================
        TECNOLOGIAS
        ============================================================ */
-    function renderTechChips() {
-      const grid = $('techGrid');
-      grid.innerHTML = '';
+    function normalizeText(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
 
+    function renderTechChips() {
+      const wrap = $('techGrid');
+      const query = normalizeText($('techSearch').value);
+
+      wrap.innerHTML = '';
       const full = selectedTech.size >= MAX_TECH;
 
-      allTechIcons.forEach((tech) => {
-        const checked = selectedTech.has(tech.name);
-        const chip = document.createElement('label');
-        chip.className = 'tech-chip';
-        if (checked) chip.classList.add('is-on');
-        if (!checked && full) chip.classList.add('is-locked');
-        chip.title = tech.name;
+      techGroups.forEach((group) => {
+        const items = allTechIcons.filter((tech) => {
+          if (tech.group !== group) return false;
+          if (!query) return true;
+          return normalizeText(`${tech.name} ${tech.group}`).includes(query);
+        });
+        if (!items.length) return;
 
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.checked = checked;
-        input.addEventListener('change', () => toggleTech(tech.name, input));
+        const block = document.createElement('div');
+        block.className = 'tech-group';
 
+        const title = document.createElement('div');
+        title.className = 'tech-group-title';
+        title.textContent = group;
+
+        const grid = document.createElement('div');
+        grid.className = 'tech-grid';
+
+        items.forEach((tech) => {
+          const checked = selectedTech.has(tech.name);
+          const chip = document.createElement('label');
+          chip.className = 'tech-chip';
+          if (checked) chip.classList.add('is-on');
+          if (!checked && full) chip.classList.add('is-locked');
+          chip.title = tech.name;
+
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = checked;
+          input.addEventListener('change', () => toggleTech(tech.name, input));
+
+          chip.append(input, buildTechBadge(tech), Object.assign(document.createElement('span'), { textContent: tech.name }));
+          grid.appendChild(chip);
+        });
+
+        block.append(title, grid);
+        wrap.appendChild(block);
+      });
+
+      if (!wrap.children.length) {
+        const empty = document.createElement('p');
+        empty.className = 'tech-empty';
+        empty.textContent = 'nada encontrado por aqui.';
+        wrap.appendChild(empty);
+      }
+
+      $('techCounter').textContent = `${selectedTech.size}/${MAX_TECH}`;
+    }
+
+    function buildTechBadge(tech, inCard = false) {
+      if (tech.class) {
         const icon = document.createElement('i');
         icon.className = tech.class;
         icon.setAttribute('aria-hidden', 'true');
+        return icon;
+      }
 
-        const name = document.createElement('span');
-        name.textContent = tech.name;
-
-        chip.append(input, icon, name);
-        grid.appendChild(chip);
-      });
-
-      $('techCounter').textContent = `${selectedTech.size}/${MAX_TECH}`;
+      const glyph = document.createElement('span');
+      glyph.className = inCard ? 'tn-glyph' : 'tech-glyph';
+      if (tech.glyph.length > 2) glyph.classList.add('is-long');
+      glyph.textContent = tech.glyph;
+      return glyph;
     }
 
     function toggleTech(name, input) {
@@ -1597,9 +1769,7 @@
         .forEach((tech) => {
           const chip = document.createElement('div');
           chip.className = 'tn-chip';
-          const icon = document.createElement('i');
-          icon.className = tech.class;
-          chip.appendChild(icon);
+          chip.appendChild(buildTechBadge(tech, true));
           display.appendChild(chip);
         });
     }
