@@ -10,17 +10,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Merriweather:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Source+Sans+3:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     /* Variáveis CSS para Cores Dinâmicas */
     :root {
-      --bg-dark: #0F172A; /* Cor de Fundo Principal */
-      --accent-primary: #2563EB; /* Cor de Destaque */
+      --bg-dark: #0F172A;
+      --accent-primary: #2563EB;
       --accent-secondary: #1D4ED8;
+      --icon-color: #F8FAFC;
       --text-light: #FFFFFF;
       --text-dim: #94A3B8;
+      --font-body: 'Inter', sans-serif;
+      --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+      --font-subtitle: 'Merriweather', serif;
     }
 
     * {
@@ -30,7 +34,7 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       background-color: #f0f2f5;
       display: flex;
       flex-direction: column;
@@ -54,7 +58,7 @@
       gap: 15px;
       flex-wrap: wrap;
       width: 100%;
-      max-width: 1000px; /* Aumentei o max-width para acomodar mais controles */
+      max-width: 1200px;
       justify-content: center;
     }
 
@@ -65,25 +69,46 @@
       min-width: 180px;
     }
 
+    .input-group.wide {
+      min-width: 250px;
+    }
+
+    .color-input-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 210px;
+    }
+
+    .color-input-block input[type="color"] {
+      width: 52px;
+      min-width: 52px;
+      height: 38px;
+      padding: 2px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      background: white;
+    }
+
+    .color-input-block input[type="text"] {
+      flex: 1;
+    }
+
     label {
       font-size: 0.8rem;
       font-weight: 600;
       color: #64748b;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    select {
       padding: 8px 12px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-family: inherit;
-    }
-    
-    input[type="color"] {
-        height: 38px;
-        padding: 4px;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
-        cursor: pointer;
+      font-size: 0.95rem;
+      background: white;
     }
 
     input[type="file"] {
@@ -105,45 +130,79 @@
     button:hover {
       background-color: var(--accent-secondary);
     }
-    
+
+    .color-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #f8fafc;
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(15, 23, 42, 0.15);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+    }
+
+    .swatch:hover {
+      transform: translateY(-1px) scale(1.05);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+    }
+
+    .swatch.active {
+      outline: 2px solid #0f172a;
+      outline-offset: 2px;
+    }
+
     /* Controles de Ícones */
     .icon-picker {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        min-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      max-width: 100%;
     }
 
     .icon-checkbox-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        border: 1px solid #cbd5e1;
-        padding: 8px;
-        border-radius: 6px;
-        background-color: #f8fafc;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 8px;
+      border-radius: 6px;
+      background-color: #f8fafc;
+      min-height: 58px;
     }
     
     .icon-checkbox-group label {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 400;
-        transition: background-color 0.1s;
-        color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 400;
+      transition: background-color 0.1s;
+      color: var(--text-primary);
     }
     
     .icon-checkbox-group label:hover {
-        background-color: #e2e8f0;
+      background-color: #e2e8f0;
     }
 
     .icon-checkbox-group input[type="checkbox"] {
-        cursor: pointer;
+      cursor: pointer;
     }
-    
+
     /* --- ÁREA DA THUMBNAIL (1200x630px - Padrão Open Graph/LinkedIn) --- */
     #thumbnail-container {
       width: 1200px;
@@ -154,9 +213,8 @@
       display: flex;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
       transform-origin: top center;
-      /* Escala para caber em telas menores durante a edição */
       transform: scale(0.6); 
-      margin-bottom: -200px; /* Compensa o scale */
+      margin-bottom: -200px;
     }
 
     /* Background Effects (Usam var(--accent-primary)) */
@@ -167,8 +225,8 @@
       width: 100%;
       height: 100%;
       background-image: 
-        linear-gradient(var(--accent-primary-low-opacity) 1px, transparent 1px),
-        linear-gradient(90deg, var(--accent-primary-low-opacity) 1px, transparent 1px);
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       opacity: 0.3;
       z-index: 1;
@@ -180,7 +238,7 @@
       right: -10%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, var(--accent-primary-medium-opacity) 0%, var(--bg-dark-transparent) 70%);
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(15,23,42,0) 70%);
       z-index: 1;
     }
 
@@ -199,7 +257,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: var(--accent-primary-low-opacity);
+      background: rgba(255,255,255,0.08);
       color: var(--accent-primary);
       padding: 8px 16px;
       border-radius: 50px;
@@ -207,7 +265,7 @@
       font-size: 1.1rem;
       width: fit-content;
       margin-bottom: 24px;
-      border: 1px solid var(--accent-primary-medium-opacity);
+      border: 1px solid rgba(255,255,255,0.12);
     }
 
     .main-title {
@@ -217,6 +275,7 @@
       line-height: 1.1;
       margin-bottom: 24px;
       letter-spacing: -0.02em;
+      font-family: var(--font-heading);
     }
 
     .highlight-text {
@@ -226,7 +285,7 @@
     .subtitle {
       font-size: 1.8rem;
       color: var(--text-dim);
-      font-family: 'Merriweather', serif;
+      font-family: var(--font-subtitle);
       font-weight: 300;
       max-width: 90%;
     }
@@ -235,11 +294,14 @@
       margin-top: 40px;
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
+      max-width: 85%;
     }
 
     .tech-icon {
       font-size: 2.5rem;
-      color: #cbd5e1;
+      color: var(--icon-color);
+      opacity: 0.9;
     }
 
     /* Right Side (Image) */
@@ -303,7 +365,6 @@
       100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
     }
 
-    /* Responsive scaling for preview */
     @media (max-width: 1250px) {
       #thumbnail-container {
         transform: scale(0.45);
@@ -319,63 +380,61 @@
         flex-direction: column;
       }
     }
-    
-    /* --- Modal e Cropper CSS --- */
+
     .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
     }
 
     .modal-content {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        max-width: 90vw;
-        max-height: 90vh;
-        width: 600px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 90vw;
+      max-height: 90vh;
+      width: 600px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
     }
 
     .cropper-container-box {
-        max-width: 100%;
-        max-height: 400px;
-        overflow: hidden;
-        margin-bottom: 15px;
+      max-width: 100%;
+      max-height: 400px;
+      overflow: hidden;
+      margin-bottom: 15px;
     }
 
     #imageCropper {
-        display: block;
-        max-width: 100%;
+      display: block;
+      max-width: 100%;
     }
 
     .cropper-buttons {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
     }
 
     .cropper-buttons button {
-        flex: 1;
-        padding: 12px;
-        font-size: 1rem;
-        align-self: auto;
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      align-self: auto;
     }
 
     #cropAndApply {
-        background-color: #10B981; /* Green */
+      background-color: #10B981;
     }
     #cropAndApply:hover {
-        background-color: #059669;
+      background-color: #059669;
     }
-
   </style>
 </head>
 <body>
@@ -384,24 +443,52 @@
 
   <div class="controls">
     
-    <div class="input-group">
+    <div class="input-group wide">
       <label>Título Principal</label>
       <input type="text" id="inputTitle" value="Samuel Santos" oninput="updateContent()">
     </div>
     
-    <div class="input-group">
+    <div class="input-group wide">
       <label>Subtítulo</label>
       <input type="text" id="inputSubtitle" value="Especialista em Geotecnologias" oninput="updateContent()">
+    </div>
+
+    <div class="input-group">
+      <label>Fonte</label>
+      <select id="fontSelect" onchange="updateFont()">
+        <option value="'Inter', sans-serif">Inter</option>
+        <option value="'Space Grotesk', 'Inter', sans-serif">Space Grotesk</option>
+        <option value="'Manrope', 'Inter', sans-serif">Manrope</option>
+        <option value="'Poppins', 'Inter', sans-serif">Poppins</option>
+        <option value="'Montserrat', 'Inter', sans-serif">Montserrat</option>
+        <option value="'Source Sans 3', 'Inter', sans-serif">Source Sans 3</option>
+        <option value="'Merriweather', serif">Merriweather</option>
+        <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+      </select>
     </div>
     
     <div class="input-group">
       <label>Cor de Fundo Escuro</label>
-      <input type="color" id="inputBgDark" value="#0F172A" oninput="updateColors()">
+      <div class="color-input-block">
+        <input type="color" id="inputBgDark" value="#0F172A" oninput="syncHexInput('bgDark')">
+        <input type="text" id="inputBgDarkHex" value="#0F172A" maxlength="7" oninput="handleHexInput('bgDark', this.value)">
+      </div>
     </div>
     
     <div class="input-group">
       <label>Cor de Destaque</label>
-      <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="updateColors()">
+      <div class="color-input-block">
+        <input type="color" id="inputAccentPrimary" value="#2563EB" oninput="syncHexInput('accentPrimary')">
+        <input type="text" id="inputAccentPrimaryHex" value="#2563EB" maxlength="7" oninput="handleHexInput('accentPrimary', this.value)">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Cor dos Ícones</label>
+      <div class="color-input-block">
+        <input type="color" id="inputIconColor" value="#F8FAFC" oninput="syncHexInput('iconColor')">
+        <input type="text" id="inputIconColorHex" value="#F8FAFC" maxlength="7" oninput="handleHexInput('iconColor', this.value)">
+      </div>
     </div>
 
     <div class="input-group">
@@ -411,17 +498,17 @@
     
     <button onclick="downloadThumbnail()"><i class="fas fa-download"></i> Baixar PNG</button>
     
-    <!-- Novo Controle de Ícones -->
     <div class="icon-picker">
-        <label>Tecnologias (Max 5)</label>
-        <div class="icon-checkbox-group" id="iconCheckboxes">
-            <!-- Checkboxes serão gerados pelo JS -->
-        </div>
+      <label>Tecnologias (Max 5)</label>
+      <div class="icon-checkbox-group" id="iconCheckboxes"></div>
     </div>
-    <!-- Fim Novo Controle de Ícones -->
+
+    <div class="input-group wide" style="margin-top: 8px;">
+      <label>Cartela de Cores</label>
+      <div class="color-palette" id="colorPalette"></div>
+    </div>
   </div>
 
-  <!-- THUMBNAIL PREVIEW -->
   <div id="thumbnail-container">
     <div class="bg-grid"></div>
     <div class="bg-glow"></div>
@@ -437,9 +524,7 @@
         Especialista em Geotecnologias
       </p>
 
-      <div class="tech-stack" id="displayTechStack">
-        <!-- Ícones renderizados pelo JS -->
-      </div>
+      <div class="tech-stack" id="displayTechStack"></div>
     </div>
 
     <div class="image-side">
@@ -453,7 +538,6 @@
     </div>
   </div>
 
-  <!-- MODAL DE RECORTE (CROPPER) -->
   <div id="cropModal" class="modal-overlay">
     <div class="modal-content">
       <h2>Ajustar Imagem de Perfil (1:1)</h2>
@@ -467,27 +551,52 @@
     </div>
   </div>
 
-
   <script>
-    let cropper; // Variável global para a instância do Cropper
+    let cropper;
     const root = document.documentElement;
 
     const allTechIcons = [
-        { name: "Python", class: "fab fa-python" },
-        { name: "JavaScript", class: "fab fa-js" },
-        { name: "HTML5", class: "fab fa-html5" },
-        { name: "CSS3", class: "fab fa-css3-alt" },
-        { name: "React", class: "fab fa-react" },
-        { name: "Node.js", class: "fab fa-node-js" },
-        { name: "Docker", class: "fab fa-docker" },
-        { name: "Git", class: "fab fa-git-alt" },
-        { name: "Database", class: "fas fa-database" },
-        { name: "Mapa/GIS", class: "fas fa-map-marked-alt" },
-        { name: "Análise", class: "fas fa-chart-pie" },
-        { name: "Cloud", class: "fas fa-cloud" },
+      { name: "Python", class: "fab fa-python" },
+      { name: "JavaScript", class: "fab fa-js" },
+      { name: "TypeScript", class: "fas fa-code" },
+      { name: "HTML5", class: "fab fa-html5" },
+      { name: "CSS3", class: "fab fa-css3-alt" },
+      { name: "React", class: "fab fa-react" },
+      { name: "Vue", class: "fab fa-vuejs" },
+      { name: "Angular", class: "fab fa-angular" },
+      { name: "Node.js", class: "fab fa-node-js" },
+      { name: "Next.js", class: "fas fa-rocket" },
+      { name: "Tailwind", class: "fas fa-wind" },
+      { name: "Git", class: "fab fa-git-alt" },
+      { name: "Docker", class: "fab fa-docker" },
+      { name: "Figma", class: "fab fa-figma" },
+      { name: "Database", class: "fas fa-database" },
+      { name: "PostgreSQL", class: "fas fa-server" },
+      { name: "MySQL", class: "fas fa-database" },
+      { name: "MongoDB", class: "fas fa-database" },
+      { name: "Redis", class: "fas fa-memory" },
+      { name: "Cloud", class: "fas fa-cloud" },
+      { name: "AWS", class: "fab fa-aws" },
+      { name: "Mapa/GIS", class: "fas fa-map-marked-alt" },
+      { name: "Análise", class: "fas fa-chart-pie" },
+      { name: "IA", class: "fas fa-brain" },
+      { name: "Design", class: "fas fa-paint-brush" },
+      { name: "PHP", class: "fab fa-php" },
+      { name: "Laravel", class: "fab fa-laravel" },
+      { name: "Go", class: "fas fa-code" },
+      { name: "Java", class: "fab fa-java" },
+      { name: "C#", class: "fas fa-code" }
     ];
 
-    // Função Auxiliar: Converte arquivo/blob para Base64
+    const colorPalettes = [
+      { name: "Aipim", bg: "#0F172A", accent: "#22C55E", icon: "#F8FAFC" },
+      { name: "Ocean", bg: "#061B2D", accent: "#2DD4BF", icon: "#E0F2FE" },
+      { name: "Sunset", bg: "#1F2937", accent: "#F97316", icon: "#FFF7ED" },
+      { name: "Violet", bg: "#111827", accent: "#A78BFA", icon: "#F5F3FF" },
+      { name: "Rose", bg: "#1F1B2D", accent: "#F472B6", icon: "#FDF2F8" },
+      { name: "Lime", bg: "#132A13", accent: "#84CC16", icon: "#F0FDF4" }
+    ];
+
     const fileToBase64 = (file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -496,249 +605,316 @@
         reader.onerror = error => reject(error);
       });
     };
-    
-    // Função para converter cor hex para RGBA com opacidade
+
     function hexToRgba(hex, opacity) {
-        let r = 0, g = 0, b = 0;
-        // 3 digits
-        if (hex.length == 4) {
-            r = parseInt(hex[1] + hex[1], 16);
-            g = parseInt(hex[2] + hex[2], 16);
-            b = parseInt(hex[3] + hex[3], 16);
-        } 
-        // 6 digits
-        else if (hex.length == 7) {
-            r = parseInt(hex.substring(1, 3), 16);
-            g = parseInt(hex.substring(3, 5), 16);
-            b = parseInt(hex.substring(5, 7), 16);
-        }
-        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+      const normalized = normalizeHex(hex, '#2563EB');
+      const r = parseInt(normalized.substring(1, 3), 16);
+      const g = parseInt(normalized.substring(3, 5), 16);
+      const b = parseInt(normalized.substring(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
 
-    // 1. Atualização de Cores
+    function normalizeHex(value, fallback = '#000000') {
+      if (!value) return fallback;
+      let raw = value.trim();
+      if (!raw) return fallback;
+
+      if (raw.startsWith('rgb')) {
+        const match = raw.match(/rgba?\(([^)]+)\)/i);
+        if (match) {
+          const channels = match[1].split(',').map(part => Number(part.trim()));
+          if (channels.length >= 3 && channels.every(n => !Number.isNaN(n))) {
+            const [r, g, b] = channels.slice(0, 3).map(n => Math.max(0, Math.min(255, Math.round(n))));
+            return `#${[r, g, b].map(n => n.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+          }
+        }
+        return fallback;
+      }
+
+      if (raw.startsWith('#')) raw = raw.slice(1);
+      if (raw.length === 3) {
+        raw = raw.split('').map(char => char + char).join('');
+      }
+      if (/^[0-9a-fA-F]{6}$/.test(raw)) {
+        return `#${raw.toUpperCase()}`;
+      }
+
+      return fallback;
+    }
+
+    function syncHexInput(type) {
+      const colorInputMap = {
+        bgDark: { picker: 'inputBgDark', text: 'inputBgDarkHex' },
+        accentPrimary: { picker: 'inputAccentPrimary', text: 'inputAccentPrimaryHex' },
+        iconColor: { picker: 'inputIconColor', text: 'inputIconColorHex' }
+      };
+
+      const selected = colorInputMap[type];
+      if (!selected) return;
+
+      const picker = document.getElementById(selected.picker);
+      const text = document.getElementById(selected.text);
+      const value = normalizeHex(picker.value, text.value || '#000000');
+      picker.value = value;
+      text.value = value;
+      updateColors();
+    }
+
+    function handleHexInput(type, rawValue) {
+      const value = normalizeHex(rawValue, document.getElementById(`input${type === 'bgDark' ? 'BgDark' : type === 'accentPrimary' ? 'AccentPrimary' : 'IconColor'}Color`).value || '#000000');
+      const colorInput = document.getElementById(type === 'bgDark' ? 'inputBgDark' : type === 'accentPrimary' ? 'inputAccentPrimary' : 'inputIconColor');
+      const textInput = document.getElementById(type === 'bgDark' ? 'inputBgDarkHex' : type === 'accentPrimary' ? 'inputAccentPrimaryHex' : 'inputIconColorHex');
+      colorInput.value = value;
+      textInput.value = value;
+      updateColors();
+    }
+
     function updateColors() {
-        const darkHex = document.getElementById('inputBgDark').value;
-        const accentHex = document.getElementById('inputAccentPrimary').value;
-        
-        root.style.setProperty('--bg-dark', darkHex);
-        root.style.setProperty('--accent-primary', accentHex);
+      const darkHex = normalizeHex(document.getElementById('inputBgDark').value, '#0F172A');
+      const accentHex = normalizeHex(document.getElementById('inputAccentPrimary').value, '#2563EB');
+      const iconHex = normalizeHex(document.getElementById('inputIconColor').value, '#F8FAFC');
 
-        // Gera cores com opacidade para os efeitos de fundo
-        root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.2));
-        root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.4));
-        root.style.setProperty('--bg-dark-transparent', hexToRgba(darkHex, 0));
+      root.style.setProperty('--bg-dark', darkHex);
+      root.style.setProperty('--accent-primary', accentHex);
+      root.style.setProperty('--icon-color', iconHex);
+
+      const accentSecondary = hexToRgba(accentHex, 0.8)
+        .replace(/rgba\(([^)]+)\)/, (_, rgb) => {
+          const [r, g, b] = rgb.split(',').map(Number);
+          return `rgb(${Math.max(0, r - 20)}, ${Math.max(0, g - 20)}, ${Math.max(0, b - 20)})`;
+        });
+      root.style.setProperty('--accent-secondary', accentSecondary);
+
+      root.style.setProperty('--accent-primary-low-opacity', hexToRgba(accentHex, 0.2));
+      root.style.setProperty('--accent-primary-medium-opacity', hexToRgba(accentHex, 0.4));
+      root.style.setProperty('--bg-dark-transparent', hexToRgba(darkHex, 0));
+      document.getElementById('inputBgDark').value = darkHex;
+      document.getElementById('inputBgDarkHex').value = darkHex;
+      document.getElementById('inputAccentPrimary').value = accentHex;
+      document.getElementById('inputAccentPrimaryHex').value = accentHex;
+      document.getElementById('inputIconColor').value = iconHex;
+      document.getElementById('inputIconColorHex').value = iconHex;
     }
 
-    // 2. Renderiza os Checkboxes de Ícones
+    function renderColorSwatches() {
+      const paletteContainer = document.getElementById('colorPalette');
+      paletteContainer.innerHTML = '';
+
+      colorPalettes.forEach((palette) => {
+        const swatch = document.createElement('button');
+        swatch.type = 'button';
+        swatch.className = 'swatch';
+        swatch.title = `${palette.name} (${palette.bg}, ${palette.accent}, ${palette.icon})`;
+        swatch.style.background = `linear-gradient(135deg, ${palette.accent}, ${palette.icon})`;
+        swatch.setAttribute('aria-label', `${palette.name} palette`);
+
+        swatch.addEventListener('click', () => {
+          document.getElementById('inputBgDark').value = palette.bg;
+          document.getElementById('inputAccentPrimary').value = palette.accent;
+          document.getElementById('inputIconColor').value = palette.icon;
+          updateColors();
+          document.querySelectorAll('.swatch').forEach(btn => btn.classList.remove('active'));
+          swatch.classList.add('active');
+        });
+
+        paletteContainer.appendChild(swatch);
+      });
+    }
+
+    function updateFont() {
+      const selectedFont = document.getElementById('fontSelect').value;
+      root.style.setProperty('--font-body', selectedFont);
+      root.style.setProperty('--font-heading', selectedFont);
+      document.body.style.fontFamily = selectedFont;
+    }
+
     function renderIconCheckboxes() {
-        const container = document.getElementById('iconCheckboxes');
-        container.innerHTML = ''; // Limpa o conteúdo
-        
-        allTechIcons.forEach(icon => {
-            const id = `icon-${icon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
-            const isChecked = ['Python', 'Database', 'Mapa/GIS', 'JavaScript', 'Análise'].includes(icon.name); // Seleção padrão
-            
-            const label = document.createElement('label');
-            label.setAttribute('for', id);
-            
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = id;
-            checkbox.value = icon.class;
-            checkbox.checked = isChecked;
-            checkbox.onchange = updateTechStack;
-            
-            const iconSpan = document.createElement('i');
-            iconSpan.className = icon.class;
-            
-            const textNode = document.createTextNode(icon.name);
-            
-            label.appendChild(checkbox);
-            label.appendChild(iconSpan);
-            label.appendChild(textNode);
-            container.appendChild(label);
-        });
+      const container = document.getElementById('iconCheckboxes');
+      container.innerHTML = '';
 
-        updateTechStack(); // Renderiza os ícones iniciais
+      allTechIcons.forEach(icon => {
+        const id = `icon-${icon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+        const isChecked = ['Python', 'Database', 'Mapa/GIS', 'JavaScript', 'Análise', 'Cloud'].includes(icon.name);
+
+        const label = document.createElement('label');
+        label.setAttribute('for', id);
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = id;
+        checkbox.value = icon.class;
+        checkbox.checked = isChecked;
+        checkbox.onchange = updateTechStack;
+
+        const iconSpan = document.createElement('i');
+        iconSpan.className = icon.class;
+
+        const textNode = document.createTextNode(icon.name);
+
+        label.appendChild(checkbox);
+        label.appendChild(iconSpan);
+        label.appendChild(textNode);
+        container.appendChild(label);
+      });
+
+      updateTechStack();
     }
 
-    // 3. Atualiza os Ícones Visíveis
     function updateTechStack() {
-        const selectedCheckboxes = Array.from(document.querySelectorAll('#iconCheckboxes input[type="checkbox"]:checked'));
-        const displayContainer = document.getElementById('displayTechStack');
-        displayContainer.innerHTML = '';
-        
-        // Limita a 5 ícones
-        const iconsToDisplay = selectedCheckboxes.slice(0, 5);
-        
-        iconsToDisplay.forEach(checkbox => {
-            const iconElement = document.createElement('i');
-            iconElement.className = `${checkbox.value} tech-icon`;
-            displayContainer.appendChild(iconElement);
-        });
+      const selectedCheckboxes = Array.from(document.querySelectorAll('#iconCheckboxes input[type="checkbox"]:checked'));
+      const displayContainer = document.getElementById('displayTechStack');
+      displayContainer.innerHTML = '';
 
-        // Desabilita os extras se o limite for atingido
-        const checkboxes = document.querySelectorAll('#iconCheckboxes input[type="checkbox"]');
-        if (selectedCheckboxes.length >= 5) {
-            checkboxes.forEach(cb => {
-                if (!cb.checked) {
-                    cb.disabled = true;
-                }
-            });
-        } else {
-            checkboxes.forEach(cb => {
-                cb.disabled = false;
-            });
-        }
+      const iconsToDisplay = selectedCheckboxes.slice(0, 5);
+
+      iconsToDisplay.forEach(checkbox => {
+        const iconElement = document.createElement('i');
+        iconElement.className = `${checkbox.value} tech-icon`;
+        displayContainer.appendChild(iconElement);
+      });
+
+      const checkboxes = document.querySelectorAll('#iconCheckboxes input[type="checkbox"]');
+      if (selectedCheckboxes.length >= 5) {
+        checkboxes.forEach(cb => {
+          if (!cb.checked) cb.disabled = true;
+        });
+      } else {
+        checkboxes.forEach(cb => {
+          cb.disabled = false;
+        });
+      }
     }
 
-
-    // Função para abrir o modal do Cropper
     function openCropper(imageUrl) {
-        const modal = document.getElementById('cropModal');
-        const image = document.getElementById('imageCropper');
-        
-        image.src = imageUrl;
-        modal.style.display = 'flex';
+      const modal = document.getElementById('cropModal');
+      const image = document.getElementById('imageCropper');
 
-        if (cropper) {
-            cropper.destroy();
-        }
+      image.src = imageUrl;
+      modal.style.display = 'flex';
 
-        // Inicializa o Cropper
-        cropper = new Cropper(image, {
-            aspectRatio: 1, // Força o recorte para ser um quadrado (1:1)
-            viewMode: 1, 
-            autoCropArea: 0.9,
-            responsive: true,
-            background: false
-        });
+      if (cropper) {
+        cropper.destroy();
+      }
+
+      cropper = new Cropper(image, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.9,
+        responsive: true,
+        background: false
+      });
     }
 
-    // Função para fechar o modal do Cropper
     function closeCropper() {
-        document.getElementById('cropModal').style.display = 'none';
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
-        }
-        // Limpa o input file, forçando um novo evento se a mesma imagem for selecionada
-        document.getElementById('imageInput').value = ''; 
+      document.getElementById('cropModal').style.display = 'none';
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+      document.getElementById('imageInput').value = '';
     }
 
-    // Ação do botão "Aplicar Recorte"
     document.getElementById('cropAndApply').addEventListener('click', () => {
-        if (cropper) {
-            // Obtém a imagem recortada como Base64 (tamanho 420x420 para manter a qualidade)
-            const croppedCanvas = cropper.getCroppedCanvas({
-                width: 420, // Tamanho ideal para o frame na thumbnail
-                height: 420,
-            });
-            const base64 = croppedCanvas.toDataURL('image/jpeg');
+      if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas({
+          width: 420,
+          height: 420,
+        });
+        const base64 = croppedCanvas.toDataURL('image/jpeg');
 
-            const output = document.getElementById('displayImage');
-            output.src = base64;
-            output.style.display = 'block';
-            document.querySelector('.placeholder-text').style.display = 'none';
+        const output = document.getElementById('displayImage');
+        output.src = base64;
+        output.style.display = 'block';
+        document.querySelector('.placeholder-text').style.display = 'none';
 
-            closeCropper();
-        }
+        closeCropper();
+      }
     });
 
-    // Inicialização da Aplicação
     window.onload = async () => {
-        updateContent(); // Atualiza textos iniciais
-        updateColors(); // Aplica cores iniciais e variáveis de opacidade
-        renderIconCheckboxes(); // Renderiza e aplica os ícones iniciais
-        
-        try {
-            // Tenta buscar a imagem padrão na mesma pasta
-            const response = await fetch('Perfil2.jpg');
-            if (response.ok) {
-                const blob = await response.blob();
-                const base64 = await fileToBase64(blob);
-                
-                const img = document.getElementById('displayImage');
-                img.src = base64; 
-                img.style.display = 'block';
-                document.querySelector('.placeholder-text').style.display = 'none';
-            } else {
-                document.querySelector('.placeholder-text').innerText = "Carregue sua foto";
-            }
-        } catch (e) {
-            console.log("Imagem padrão não encontrada ou erro ao converter. Usuário deve fazer upload.", e);
-            document.querySelector('.placeholder-text').innerText = "Carregue sua foto";
+      updateContent();
+      updateColors();
+      renderIconCheckboxes();
+      renderColorSwatches();
+      updateFont();
+
+      try {
+        const response = await fetch('Perfil2.jpg');
+        if (response.ok) {
+          const blob = await response.blob();
+          const base64 = await fileToBase64(blob);
+
+          const img = document.getElementById('displayImage');
+          img.src = base64;
+          img.style.display = 'block';
+          document.querySelector('.placeholder-text').style.display = 'none';
+        } else {
+          document.querySelector('.placeholder-text').innerText = 'Carregue sua foto';
         }
+      } catch (e) {
+        console.log('Imagem padrão não encontrada ou erro ao converter. Usuário deve fazer upload.', e);
+        document.querySelector('.placeholder-text').innerText = 'Carregue sua foto';
+      }
     };
 
-    // Atualização de Texto
     function updateContent() {
       document.getElementById('displayTitle').innerText = document.getElementById('inputTitle').value;
       document.getElementById('displaySubtitle').innerText = document.getElementById('inputSubtitle').value;
     }
 
-    // Upload de Imagem (Abre o Cropper)
     async function handleImageUpload(event) {
       const file = event.target.files[0];
       if (file) {
-          try {
-            const base64 = await fileToBase64(file);
-            openCropper(base64); // Chama o modal de recorte
-          } catch (e) {
-            console.error("Erro ao ler arquivo", e);
-          }
+        try {
+          const base64 = await fileToBase64(file);
+          openCropper(base64);
+        } catch (e) {
+          console.error('Erro ao ler arquivo', e);
+        }
       }
     }
 
-    // Download
     function downloadThumbnail() {
-      const element = document.getElementById("thumbnail-container");
-      
-      // Salva estilos atuais
+      const element = document.getElementById('thumbnail-container');
       const currentTransform = element.style.transform;
       const currentMargin = element.style.marginBottom;
-      
-      // Reseta escala para qualidade máxima para html2canvas
-      element.style.transform = "scale(1)";
-      element.style.marginBottom = "0";
-      
-      // Delay para renderização
+
+      element.style.transform = 'scale(1)';
+      element.style.marginBottom = '0';
+
       setTimeout(() => {
         html2canvas(element, {
-          backgroundColor: root.style.getPropertyValue('--bg-dark'), 
-          scale: 1, // Garante que a imagem é gerada em 1200x630px
-          useCORS: true, 
+          backgroundColor: root.style.getPropertyValue('--bg-dark'),
+          scale: 1,
+          useCORS: true,
           allowTaint: true
         }).then(canvas => {
           const link = document.createElement('a');
           link.download = 'samuel-santos-thumbnail.png';
-          link.href = canvas.toDataURL("image/png");
+          link.href = canvas.toDataURL('image/png');
           link.click();
 
-          // Restaura visual após o download
           element.style.transform = currentTransform;
           element.style.marginBottom = currentMargin;
         }).catch(err => {
-            console.error("Erro ao gerar imagem:", err);
-            
-            // Exibe modal de erro customizado (Substitui o alert())
-            const errorMessage = "Erro ao gerar a imagem. Verifique o console (F12).";
-            const modal = document.createElement('div');
-            modal.style.cssText = `
-                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-                z-index: 2001; text-align: center; font-family: 'Inter', sans-serif;
-            `;
-            modal.innerHTML = `
-                <p style="color: #EF4444; font-weight: 700;">Erro na Captura!</p>
-                <p style="margin-top: 10px; color: #333;">${errorMessage}</p>
-                <button onclick="this.parentNode.remove()" style="margin-top: 15px; background-color: #EF4444; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Fechar</button>
-            `;
-            document.body.appendChild(modal);
+          console.error('Erro ao gerar imagem:', err);
 
-            // Restaura visual
-            element.style.transform = currentTransform;
-            element.style.marginBottom = currentMargin;
+          const errorMessage = 'Erro ao gerar a imagem. Verifique o console (F12).';
+          const modal = document.createElement('div');
+          modal.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 2001; text-align: center; font-family: 'Inter', sans-serif;
+          `;
+          modal.innerHTML = `
+            <p style="color: #EF4444; font-weight: 700;">Erro na Captura!</p>
+            <p style="margin-top: 10px; color: #333;">${errorMessage}</p>
+            <button onclick="this.parentNode.remove()" style="margin-top: 15px; background-color: #EF4444; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Fechar</button>
+          `;
+          document.body.appendChild(modal);
+
+          element.style.transform = currentTransform;
+          element.style.marginBottom = currentMargin;
         });
       }, 100);
     }
